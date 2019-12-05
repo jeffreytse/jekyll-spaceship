@@ -9,7 +9,10 @@ module Jekyll::Spaceship
 
     def on_posts_pre_render(post)
       # pre-handle table in markdown
-      post.content = post.content.gsub(/\|(?=\|)/, '\\|')
+      post.content = post.content
+        .gsub(/\|(?=\|)/, '\\|')
+        .gsub(/\\:(?=.*?(?<!\\)\|)/, '\\\\\\\\:')
+        .gsub(/((?<!\\)\|.*?)(\\:)/, '\1\\\\\\\\:')
     end
 
     def on_posts_post_render(post)
@@ -34,6 +37,7 @@ module Jekyll::Spaceship
         data._[namespace]
       }
 
+      # handle each table
       doc.css('table').each do |table|
         rows = table.css('tr')
         data.table= table
@@ -161,13 +165,13 @@ module Jekyll::Spaceship
         cell.content = cell.content.gsub(/^:/, "")
         align += 1
       end
-      if cell.content.match?(/(?<!:):$/)
+      if cell.content.match?(/(?<!\\):$/)
         cell.content = cell.content.gsub(/:$/, "")
         align += 2
       end
 
       # handle escape colon
-      cell.content = cell.content.gsub(/::/, ":")
+      cell.content = cell.content.gsub(/\\:/, ":")
 
       # handle text align
       return if align == 0
