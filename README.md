@@ -29,7 +29,7 @@ Add jekyll-spaceship plugin in your site's `Gemfile`, and run `bundle install`.
 gem 'jekyll-spaceship'
 ```
 
-Add jekyll-toc to the `gems:` section in your site's `_config.yml`.
+Add jekyll-spaceship to the `gems:` section in your site's `_config.yml`.
 
 ```yml
 plugins:
