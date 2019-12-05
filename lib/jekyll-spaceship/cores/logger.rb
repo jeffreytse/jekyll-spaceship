@@ -6,7 +6,7 @@ module Jekyll::Spaceship
   class Logger
     def self.display_info
       self.log "Jekyll-Spaceship #{Jekyll::Spaceship::VERSION}"
-      self.log "A powerful Jekyll plugin."
+      self.log "A Jekyll plugin to provide powerful supports."
       self.log "https://github.com/jeffreytse/jekyll-spaceship"
     end
 
