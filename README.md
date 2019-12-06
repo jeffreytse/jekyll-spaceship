@@ -18,6 +18,8 @@ A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, etc.
     - [1.4 Cell Alignment](#cell-alignment)
   - [2. MathJax Usage](#2-mathjax-usage)
   - [3. PlantUML Usage](#3-plantuml-usage)
+- [Credits](#credits)
+- [Contributing](#contributing)
 - [License](#license)
 
 
@@ -359,7 +361,17 @@ or
 Bob -> Alice : hello world
 ```
 ````
+## Credits
 
+- [Jekyll](https://github.com/jekyll/jekyll) - A blog-aware static site generator in Ruby.
+- [MultiMarkdown](https://fletcher.github.io/MultiMarkdown-6) - Lightweight markup processor to produce HTML, LaTeX, and more.
+- [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) - Multimarkdown table syntax plugin for markdown-it markdown parser.
+
+## Contributing
+
+Issues and Pull Requests are greatly appreciated. If you've never contributed to an open source project before I'm more than happy to walk you through how to create a pull request.
+
+You can start by [opening an issue](https://github.com/jeffreytse/jekyll-spaceship/issues/new) describing the problem that you're looking to resolve and we'll go from there.
 
 ## License
 This software is licensed under the [MIT license](https://opensource.org/licenses/mit-license.php) © JeffreyTse.
