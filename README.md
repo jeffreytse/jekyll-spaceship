@@ -361,6 +361,7 @@ or
 Bob -> Alice : hello world
 ```
 ````
+
 ## Credits
 
 - [Jekyll](https://github.com/jekyll/jekyll) - A blog-aware static site generator in Ruby.
