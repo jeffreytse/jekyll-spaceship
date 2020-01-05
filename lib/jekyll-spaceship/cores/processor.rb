@@ -8,9 +8,9 @@ module Jekyll::Spaceship
       @@_registers.each do |_register|
         container = _register.first
         events = _register.last.uniq
-        events = events.filter do |event|
+        events = events.select do |event|
           next true if event.match?(/^post/)
-          next !events.one?(event.to_s.gsub(/^pre/, 'post').to_sym)
+          next !events.any?(event.to_s.gsub(/^pre/, 'post').to_sym)
         end
         events.each do |event|
           register container, event

@@ -12,7 +12,7 @@ module Jekyll::Spaceship
       )
 
       post.content.scan pattern do |match|
-        match = match.filter { |m| not m.nil? }
+        match = match.select { |m| not m.nil? }
         block = match[0]
         code = match[1]
 
