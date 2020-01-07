@@ -9,6 +9,7 @@ A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, etc.
 
 ## Table of Contents
 
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
   - [1. Table Usage](#1-table-usage)
@@ -22,6 +23,8 @@ A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, etc.
 - [Contributing](#contributing)
 - [License](#license)
 
+## Requirements
+* Ruby >= 2.3.0
 
 ## Installation
 
