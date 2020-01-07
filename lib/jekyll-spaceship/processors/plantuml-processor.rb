@@ -17,7 +17,7 @@ module Jekyll::Spaceship
         code = match[1]
 
         # skip escape default plantuml block
-        if block.match? /(^\\@startuml|\\@enduml$)/
+        if block.match(/(^\\@startuml|\\@enduml$)/)
           next
         end
 

@@ -18,7 +18,7 @@ module Jekyll::Spaceship
 
     def self.use(name)
       name = name.to_s.gsub(/-/, '').downcase
-      name += 'processor' unless name.match?(/processor$/)
+      name += 'processor' unless name.match(/processor$/)
 
       self.walk(File.join(File.dirname(__FILE__), '/../processors')) do |path|
         filename = File.basename(path, '.rb')

@@ -9,7 +9,7 @@ module Jekyll::Spaceship
         container = _register.first
         events = _register.last.uniq
         events = events.select do |event|
-          next true if event.match?(/^post/)
+          next true if event.match(/^post/)
           next !events.any?(event.to_s.gsub(/^pre/, 'post').to_sym)
         end
         events.each do |event|

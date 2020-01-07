@@ -105,7 +105,7 @@ module Jekyll::Spaceship
       # handle multi-rows
       return if cell != cells.last
 
-      match = cell.content.match?(/\\$/)
+      match = cell.content.match(/\\$/)
       if match
         cell.content = cell.content.gsub(/\\$/, '')
         if not scope_table.multi_row_start
@@ -142,7 +142,7 @@ module Jekyll::Spaceship
 
       # handle rowspan
       span_cell = scope_table.span_row_cells[scope_row.col_index]
-      if span_cell and cell.content.match?(/^\^{2}/)
+      if span_cell and cell.content.match(/^\^{2}/)
         cell.content = cell.content.gsub(/^\^{2}/, "")
         span_cell.inner_html += "<br>#{cell.content}"
         rowspan = span_cell.get_attribute("rowspan") || 1
@@ -161,11 +161,11 @@ module Jekyll::Spaceship
 
       # pre-handle text align
       align = 0
-      if cell.content.match?(/^:(?!:)/)
+      if cell.content.match(/^:(?!:)/)
         cell.content = cell.content.gsub(/^:/, "")
         align += 1
       end
-      if cell.content.match?(/(?<!\\):$/)
+      if cell.content.match(/(?<!\\):$/)
         cell.content = cell.content.gsub(/:$/, "")
         align += 2
       end
@@ -186,7 +186,7 @@ module Jekyll::Spaceship
       end
 
       # handle existed inline-style
-      if style&.match?(/text-align:.+/)
+      if style&.match(/text-align:.+/)
         style = style.gsub(/text-align:.+/, align)
       else
         style = align
