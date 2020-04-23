@@ -1,23 +1,19 @@
 # frozen_string_literal: true
 
 require "ostruct"
-require 'nokogiri'
+require "nokogiri"
 
 module Jekyll::Spaceship
   class TableProcessor < Processor
-    register :posts, :pre_render, :post_render
-
-    def on_posts_pre_render(post)
-      # pre-handle table in markdown
-      post.content = post.content
-        .gsub(/\|(?=\|)/, '\\|')
+    def on_handle_markdown(content)
+      content.gsub(/\|(?=\|)/, '\\|')
         .gsub(/\\:(?=.*?(?<!\\)\|)/, '\\\\\\\\:')
         .gsub(/((?<!\\)\|.*?)(\\:)/, '\1\\\\\\\\:')
     end
 
-    def on_posts_post_render(post)
+    def on_handle_html(content)
       # use nokogiri to parse html content
-      doc = Nokogiri::HTML(post.content)
+      doc = Nokogiri::HTML(content)
 
       data = OpenStruct.new(_: OpenStruct.new)
       data.reset = ->(scope, namespace = nil) {
@@ -40,7 +36,7 @@ module Jekyll::Spaceship
       # handle each table
       doc.css('table').each do |table|
         rows = table.css('tr')
-        data.table= table
+        data.table = table
         data.rows = rows
         data.reset.call :table
         rows.each do |row|
@@ -56,9 +52,10 @@ module Jekyll::Spaceship
             handle_rowspan(data)
           end
         end
+        self.handled = true
       end
 
-      post.content = doc.at('body').inner_html
+      doc.to_html
     end
 
     def handle_colspan(data)
@@ -84,8 +81,8 @@ module Jekyll::Spaceship
       if result
         result = result[0]
         scope_row.colspan += result.scan(/\|/).count
-        cell.content = cell.content.gsub(/(\s*\|)+$/, "")
-        cell.set_attribute("colspan", scope_row.colspan + 1)
+        cell.content = cell.content.gsub(/(\s*\|)+$/, '')
+        cell.set_attribute('colspan', scope_row.colspan + 1)
       end
     end
 
@@ -143,11 +140,11 @@ module Jekyll::Spaceship
       # handle rowspan
       span_cell = scope_table.span_row_cells[scope_row.col_index]
       if span_cell and cell.content.match(/^\^{2}/)
-        cell.content = cell.content.gsub(/^\^{2}/, "")
+        cell.content = cell.content.gsub(/^\^{2}/, '')
         span_cell.inner_html += "<br>#{cell.content}"
-        rowspan = span_cell.get_attribute("rowspan") || 1
+        rowspan = span_cell.get_attribute('rowspan') || 1
         rowspan = rowspan.to_i + 1
-        span_cell.set_attribute("rowspan", "#{rowspan}")
+        span_cell.set_attribute('rowspan', "#{rowspan}")
         cell.remove
       else
         scope_table.span_row_cells[scope_row.col_index] = cell
@@ -162,27 +159,27 @@ module Jekyll::Spaceship
       # pre-handle text align
       align = 0
       if cell.content.match(/^:(?!:)/)
-        cell.content = cell.content.gsub(/^:/, "")
+        cell.content = cell.content.gsub(/^:/, '')
         align += 1
       end
       if cell.content.match(/(?<!\\):$/)
-        cell.content = cell.content.gsub(/:$/, "")
+        cell.content = cell.content.gsub(/:$/, '')
         align += 2
       end
 
       # handle escape colon
-      cell.content = cell.content.gsub(/\\:/, ":")
+      cell.content = cell.content.gsub(/\\:/, ':')
 
       # handle text align
       return if align == 0
 
-      style = cell.get_attribute("style")
+      style = cell.get_attribute('style')
       if align == 1
-        align = "text-align: left"
+        align = 'text-align: left'
       elsif align == 2
-        align = "text-align: right"
+        align = 'text-align: right'
       elsif align == 3
-        align = "text-align: center"
+        align = 'text-align: center'
       end
 
       # handle existed inline-style
@@ -191,7 +188,7 @@ module Jekyll::Spaceship
       else
         style = align
       end
-      cell.set_attribute("style", style)
+      cell.set_attribute('style', style)
     end
   end
 end

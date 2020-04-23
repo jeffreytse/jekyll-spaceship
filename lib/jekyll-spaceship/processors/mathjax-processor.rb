@@ -1,20 +1,45 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
+require "nokogiri"
 
 module Jekyll::Spaceship
   class MathjaxProcessor < Processor
-    register :posts, :post_render
+    def process?
+      return true if html?(output_ext)
+    end
 
-    def on_posts_post_render(post)
+    def on_handle_html(content)
       # use nokogiri to parse html
-      doc = Nokogiri::HTML(post.output)
+      doc = Nokogiri::HTML(content)
+
+      head = doc.at('head')
+      return content if head.nil?
+      return content if not self.has_mathjax_expression? doc
+
+      self.handled = true
 
       params = "config=TeX-AMS-MML_HTMLorMML"
       src = "//cdn.mathjax.org/mathjax/latest/MathJax.js?#{params}"
-      doc.at('head').add_child("<script src=\"#{src}\"></script>")
+      config = "MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});"
+      head.add_child("<script src=\"#{src}\">#{config}</script>")
 
-      post.output = doc.to_s
+      doc.to_html
+    end
+
+    def has_mathjax_expression?(doc)
+      doc.css('p').each do |node|
+        if node.content.match(/\$.+\$/)
+          return true
+        end
+      end
+
+      doc.css('script').each do |node|
+        type = node['type']
+        if type and type.match(/math\/tex/)
+          return true
+        end
+      end
+      false
     end
   end
 end

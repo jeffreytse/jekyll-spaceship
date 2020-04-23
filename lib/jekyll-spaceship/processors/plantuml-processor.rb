@@ -2,16 +2,14 @@
 
 module Jekyll::Spaceship
   class PlantUMLProcessor < Processor
-    register :posts, :pre_render
-
-    def on_posts_pre_render(post)
+    def on_handle_markdown(content)
       # match default plantuml block and code block
       pattern = Regexp.union(
         /(\\?@startuml((?:.|\n)*?)@enduml)/,
         /(`{3}\s*plantuml((?:.|\n)*?)`{3})/
       )
 
-      post.content.scan pattern do |match|
+      content.scan pattern do |match|
         match = match.select { |m| not m.nil? }
         block = match[0]
         code = match[1]
@@ -21,16 +19,16 @@ module Jekyll::Spaceship
           next
         end
 
-        Logger.log "handle plantuml block - #{post.path.gsub(/.*_posts\//, '')}"
+        self.handled = true
 
-        post.content = post.content.gsub(
+        content = content.gsub(
           block,
           handle_plantuml(code)
         )
       end
 
       # handle escape default plantuml block
-      post.content = post.content.gsub(/\\(@startuml|@enduml)/, '\1')
+      content.gsub(/\\(@startuml|@enduml)/, '\1')
     end
 
     def handle_plantuml(code)
