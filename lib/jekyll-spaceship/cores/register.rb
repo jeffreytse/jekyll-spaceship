@@ -5,10 +5,10 @@ module Jekyll::Spaceship
     def self.walk(start, &block)
       Dir.foreach start do |x|
         path = File.join(start, x)
-        if x == "." or x == ".."
+        if x == '.' or x == '..'
           next
         elsif File.directory?(path)
-          block.call(path + "/")
+          block.call(path + '/')
           walk path
         else
           block.call(path)
