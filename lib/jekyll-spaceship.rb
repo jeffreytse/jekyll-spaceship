@@ -9,4 +9,5 @@ module Jekyll::Spaceship
   Register.use 'table-processor'
   Register.use 'mathjax-processor'
   Register.use 'plantuml-processor'
+  Register.use 'polyfill-processor'
 end
