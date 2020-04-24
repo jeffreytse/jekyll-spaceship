@@ -6,9 +6,23 @@ require "nokogiri"
 module Jekyll::Spaceship
   class TableProcessor < Processor
     def on_handle_markdown(content)
-      content.gsub(/\|(?=\|)/, '\\|')
+      # escape | and :
+      content = content.gsub(/\|(?=\|)/, '\\|')
         .gsub(/\\:(?=.*?(?<!\\)\|)/, '\\\\\\\\:')
         .gsub(/((?<!\\)\|.*?)(\\:)/, '\1\\\\\\\\:')
+
+      # escape * and _ and $ etc.
+      content.scan(/.*(?<!\\)\|.*/) do |result|
+        replace = result.gsub(
+          /(?<!(?<!\\)\\)(\*|\$|\[|\(|\"|_)/,
+          '\\\\\\\\\1'
+        )
+        if result != replace
+          content = content.gsub(result, replace)
+        end
+      end
+
+      content
     end
 
     def on_handle_html(content)
@@ -50,6 +64,13 @@ module Jekyll::Spaceship
             handle_multi_rows(data)
             handle_text_align(data)
             handle_rowspan(data)
+          end
+        end
+        rows.each do |row|
+          cells = row.css('th, td')
+          cells.each do |cell|
+            data.cell = cell
+            handle_format(data)
           end
         end
         self.handled = true
@@ -113,7 +134,8 @@ module Jekyll::Spaceship
 
       if scope_table.multi_row_cells != cells and scope_table.multi_row_start
         for i in 0...scope_table.multi_row_cells.count do
-          scope_table.multi_row_cells[i].inner_html += "<br>#{cells[i].content}"
+          multi_row_cell = scope_table.multi_row_cells[i]
+          multi_row_cell.content += "  \n#{cells[i].content}"
         end
         row.remove
       end
@@ -141,7 +163,7 @@ module Jekyll::Spaceship
       span_cell = scope_table.span_row_cells[scope_row.col_index]
       if span_cell and cell.content.match(/^\^{2}/)
         cell.content = cell.content.gsub(/^\^{2}/, '')
-        span_cell.inner_html += "<br>#{cell.content}"
+        span_cell.content += "  \n#{cell.content}"
         rowspan = span_cell.get_attribute('rowspan') || 1
         rowspan = rowspan.to_i + 1
         span_cell.set_attribute('rowspan', "#{rowspan}")
@@ -189,6 +211,15 @@ module Jekyll::Spaceship
         style = align
       end
       cell.set_attribute('style', style)
+    end
+
+    def handle_format(data)
+      cell = data.cell
+      cvter = self.converter('markdown')
+      return if cvter.nil?
+      content = cell.content.gsub(/(?<!\\)\|/, '\\|')
+      content = cvter.convert(content.strip)
+      cell.inner_html = Nokogiri::HTML.fragment(content)
     end
   end
 end
