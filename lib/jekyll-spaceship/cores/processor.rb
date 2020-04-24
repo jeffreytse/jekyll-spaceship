@@ -48,7 +48,7 @@ module Jekyll::Spaceship
       @@_priority = nil
 
       @@_processers.push(self)
-      @@_processers.sort { |a, b| b.priority <=> a.priority }
+      @@_processers = @@_processers.sort { |a, b| b.priority <=> a.priority }
     end
 
     def initialize_register
