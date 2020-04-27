@@ -10,4 +10,5 @@ module Jekyll::Spaceship
   Register.use 'mathjax-processor'
   Register.use 'plantuml-processor'
   Register.use 'polyfill-processor'
+  Register.use 'video-processor'
 end
