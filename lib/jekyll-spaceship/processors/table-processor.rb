@@ -23,6 +23,9 @@ module Jekyll::Spaceship
         end
       end
 
+      # pre-handle row-span
+      content = content.gsub(/(?<!\\)(\|.*\\\s*)\|\s*\n/, "\\1\n")
+
       # escape | and :
       content = content.gsub(/\|(?=\|)/, '\\|')
         .gsub(/\\:(?=.*?(?<!\\)\|)/, '\\\\\\\\:')
@@ -137,9 +140,9 @@ module Jekyll::Spaceship
       # handle multi-rows
       return if cell != cells.last
 
-      match = cell.content.match(/\\$/)
+      match = cell.content.match(/(?<!\\)\\\s*$/)
       if match
-        cell.content = cell.content.gsub(/\\$/, '')
+        cell.content = cell.content.gsub(/(?<!\\)\\\s*$/, '')
         if not scope_table.multi_row_start
           scope_table.multi_row_cells = cells
           scope_table.multi_row_start = true
@@ -175,8 +178,8 @@ module Jekyll::Spaceship
 
       # handle rowspan
       span_cell = scope_table.span_row_cells[scope_row.col_index]
-      if span_cell and cell.content.match(/^\^{2}/)
-        cell.content = cell.content.gsub(/^\^{2}/, '')
+      if span_cell and cell.content.match(/^\s*\^{2}/)
+        cell.content = cell.content.gsub(/^\s*\^{2}/, '')
         span_cell.content += "  \n#{cell.content}"
         rowspan = span_cell.get_attribute('rowspan') || 1
         rowspan = rowspan.to_i + 1
@@ -194,12 +197,12 @@ module Jekyll::Spaceship
 
       # pre-handle text align
       align = 0
-      if cell.content.match(/^:(?!:)/)
-        cell.content = cell.content.gsub(/^:/, '')
+      if cell.content.match(/^\s*:(?!:)/)
+        cell.content = cell.content.gsub(/^\s*:/, '')
         align += 1
       end
-      if cell.content.match(/(?<!\\):$/)
-        cell.content = cell.content.gsub(/:$/, '')
+      if cell.content.match(/(?<!\\):\s*$/)
+        cell.content = cell.content.gsub(/:\s*$/, '')
         align += 2
       end
 
