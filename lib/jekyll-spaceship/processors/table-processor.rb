@@ -6,6 +6,23 @@ require "nokogiri"
 module Jekyll::Spaceship
   class TableProcessor < Processor
     def on_handle_markdown(content)
+      # pre-handle reference-style links
+      references = {}
+      content.scan(/(\[(.*)\]:\s*(.*))/) do |match_data|
+        ref_name = match_data[1]
+        ref_value = match_data[2]
+        references[ref_name] = ref_value
+      end
+      if references.size > 0
+        content.scan(/.*(?<!\\)\|.*/) do |result|
+          references.each do |key, val|
+            replace = result.gsub(/\[(.*)\]\s*\[#{key}\]/, "[\1](#{val})")
+            next if result == replace
+            content = content.gsub(result, replace)
+          end
+        end
+      end
+
       # escape | and :
       content = content.gsub(/\|(?=\|)/, '\\|')
         .gsub(/\\:(?=.*?(?<!\\)\|)/, '\\\\\\\\:')
@@ -15,13 +32,10 @@ module Jekyll::Spaceship
       content.scan(/.*(?<!\\)\|.*/) do |result|
         replace = result.gsub(
           /(?<!(?<!\\)\\)(\*|\$|\[|\(|\"|_)/,
-          '\\\\\\\\\1'
-        )
-        if result != replace
-          content = content.gsub(result, replace)
-        end
+          '\\\\\\\\\1')
+        next if result == replace
+        content = content.gsub(result, replace)
       end
-
       content
     end
 
