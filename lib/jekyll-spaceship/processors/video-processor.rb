@@ -3,12 +3,12 @@
 module Jekyll::Spaceship
   class VideoProcessor < Processor
     def on_handle_markdown(content)
-        content = handle_youtube(content)
-        content = handle_vimeo(content)
-        content = handle_dailymotion(content)
+      content = handle_youtube(content)
+      content = handle_vimeo(content)
+      content = handle_dailymotion(content)
     end
 
-    # Exapmples:
+    # Examples:
     # ![youtube](https://www.youtube.com/watch?v=XA2WjJbmmoM "title")
     # ![youtube](http://www.youtube.com/embed/w-m_yZCLF5Q)
     # ![youtube](//youtu.be/mEP3YXaSww8?height=100%&width=400)
@@ -20,7 +20,7 @@ module Jekyll::Spaceship
       })
     end
 
-    # Exapmples:
+    # Examples:
     # ![vimeo](https://vimeo.com/263856289)
     # ![vimeo](https://vimeo.com/263856289?height=100%&width=400)
     def handle_vimeo(content)
@@ -33,7 +33,7 @@ module Jekyll::Spaceship
       })
     end
 
-    # Exapmples:
+    # Examples:
     # ![dailymotion](https://www.dailymotion.com/video/x7tgcev)
     # ![dailymotion](https://dai.ly/x7tgcev?height=100%&width=400)
     def handle_dailymotion(content)
@@ -52,8 +52,20 @@ module Jekyll::Spaceship
       id = data[:id]
       url = "(#{host}#{id}\\S*)"
       title = '("(.*)".*){0,1}'
-      regex = /(\!\[(.*)\]\(.*#{url}\s*#{title}\))/
 
+      # pre-handle reference-style links
+      regex = /(\[(.*)\]:\s*(#{url}\s*#{title}))/
+      content.scan regex do |match_data|
+        match = match_data[0]
+        ref_name = match_data[1]
+        ref_value = match_data[2]
+        content = content.gsub(match, '')
+          .gsub(/\!\[(.*)\]\s*\[#{ref_name}\]/,
+            "![\1](#{ref_value})")
+      end
+
+      # handle inline-style links
+      regex = /(\!\[(.*)\]\(.*#{url}\s*#{title}\))/
       content.scan regex do |match_data|
         url = match_data[2]
         id = match_data[4]
