@@ -27,7 +27,7 @@ module Jekyll::Spaceship
     end
 
     def has_mathjax_expression?(doc)
-      doc.css('p').each do |node|
+      doc.css('*').each do |node|
         if node.content.match(/\$.+\$/)
           return true
         end
