@@ -75,6 +75,7 @@ module Jekyll::Spaceship
 
         data[:width] = 600 if data[:width].nil?
         data[:height] = 400 if data[:height].nil?
+        style = "max-width: 100%" if width.nil?
         width = data[:width] if width.nil?
         height = data[:height] if height.nil?
 
@@ -84,6 +85,7 @@ module Jekyll::Spaceship
           title=\"#{title}\" \
           width=\"#{width}\" \
           height=\"#{height}\" \
+          style=\"#{style}\" \
           frameborder=\"0\" \
           allowfullscreen=\"\">\
           </iframe>"
