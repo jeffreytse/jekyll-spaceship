@@ -7,7 +7,7 @@ module Jekyll::Spaceship
     def on_handle_markdown(content)
       # escape ordered list.
       rexp = /(\s*)(?<!\\)\\(?=\d+\.)/
-      self.handled = true if content.match?(rexp)
+      self.handled = true if content.match(rexp)
       content.gsub(rexp, '\1&#8291;')
     end
   end
