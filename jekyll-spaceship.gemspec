@@ -18,10 +18,10 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.3.0"
 
-  spec.add_runtime_dependency "nokogiri", "~> 1.6"
+  spec.add_dependency "jekyll", ">= 3.6", "< 5.0"
+  spec.add_dependency "nokogiri", "~> 1.6"
 
-  spec.add_development_dependency "jekyll", "~> 3.7"
-  spec.add_development_dependency "bundler", "~> 1.10"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "rspec", "~> 3.0"
 end
