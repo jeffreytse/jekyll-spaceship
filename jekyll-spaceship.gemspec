@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version       = Jekyll::Spaceship::VERSION
   spec.authors       = ["jeffreytse"]
   spec.email         = ["jeffreytse.mail@gmail.com"]
-  spec.summary       = "A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtube, etc."
+  spec.summary       = "A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtube, vimeo, dailymotion, etc."
   spec.homepage      = "https://github.com/jeffreytse/jekyll-spaceship"
   spec.license       = "MIT"
 
