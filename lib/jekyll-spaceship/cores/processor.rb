@@ -7,6 +7,7 @@ module Jekyll::Spaceship
     @@_hooks = {}
     @@_registers = []
     @@_processers = []
+    @@_exclusions = []
     @@_priority = nil
 
     attr_accessor :priority
@@ -40,6 +41,7 @@ module Jekyll::Spaceship
     def initialize()
       self.initialize_priority
       self.initialize_register
+      self.initialize_exclusions
     end
 
     def initialize_priority
@@ -69,6 +71,14 @@ module Jekyll::Spaceship
         end
       end
       @@_registers.clear
+    end
+
+    def initialize_exclusions
+      if @@_exclusions.size.zero?
+        self.class.exclude :code, :block_quotes
+      end
+      @_exclusions = @@_exclusions.uniq
+      @@_exclusions.clear
     end
 
     def self.priority(value)
@@ -145,7 +155,9 @@ module Jekyll::Spaceship
         end
 
         if self.respond_to? method
+          @page.content = self.pre_exclude @page.content
           @page.content = self.send method, @page.content
+          @page.content = self.after_exclude @page.content
         end
       else
         if html? output_ext
@@ -160,6 +172,10 @@ module Jekyll::Spaceship
           @page.output = self.send method, @page.output
         end
       end
+    end
+
+    def self.exclude(*types)
+      @@_exclusions = types
     end
 
     def html?(_ext)
@@ -217,6 +233,34 @@ module Jekyll::Spaceship
       html?(output_ext) or markdown?(ext)
     end
 
+    def pre_exclude(content)
+      @_exclusion_store = []
+      @_exclusions.each do |type|
+        regex = nil
+        if type == :code
+          regex = /(`{3}\s*(\w*)((?:.|\n)*?)`{3})/
+        end
+        next if regex.nil?
+        content.scan(regex) do |match_data|
+          match = match_data[0]
+          id = @_exclusion_store.size
+          content = content.gsub(match, "[//]: JEKYLL_EXCLUDE_##{id}")
+          @_exclusion_store.push match
+        end
+      end
+      content
+    end
+
+    def after_exclude(content)
+      while @_exclusion_store.size > 0
+        match = @_exclusion_store.pop
+        id = @_exclusion_store.size
+        content = content.gsub("[//]: JEKYLL_EXCLUDE_##{id}", match)
+      end
+      @_exclusion_store = []
+      content
+    end
+
     def on_handled
       processor = self.class.name.split('::').last
       file = page.path.gsub(/.*_posts\//, '')
@@ -251,7 +295,9 @@ module Jekyll::Spaceship
 
           # dispatch to other handlers
           if processor.respond_to? method
+            blk_content = processor.pre_exclude blk_content
             blk_content = processor.send method, blk_content
+            blk_content = processor.after_exclude blk_content
           end
         end
 

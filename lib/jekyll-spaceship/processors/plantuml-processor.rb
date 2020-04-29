@@ -2,6 +2,8 @@
 
 module Jekyll::Spaceship
   class PlantUMLProcessor < Processor
+    exclude :none
+
     def on_handle_markdown(content)
       # match default plantuml block and code block
       pattern = Regexp.union(
