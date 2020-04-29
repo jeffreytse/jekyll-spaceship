@@ -394,7 +394,7 @@ Rowspan is 4
   advanced functionality
 - Powerful API for integration with other web applications
 
-Put your math expression within \\\\\\\\\$...\$
+Put your math expression within \$...\$
 
 ```markdown
 $ a * b = c ^ b $
