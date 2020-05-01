@@ -46,23 +46,7 @@ module Jekyll::Spaceship
       # use nokogiri to parse html content
       doc = Nokogiri::HTML(content)
 
-      data = OpenStruct.new(_: OpenStruct.new)
-      data.reset = ->(scope, namespace = nil) {
-        data._.marshal_dump.each do |key, val|
-          if namespace == key or namespace.nil?
-            data._[key][scope] = OpenStruct.new
-          end
-        end
-      }
-      data.scope = ->(namespace) {
-        if not data._[namespace]
-          data._[namespace] = OpenStruct.new(
-            table: OpenStruct.new,
-            row: OpenStruct.new
-          )
-        end
-        data._[namespace]
-      }
+      data = self.table_scope_data
 
       # handle each table
       doc.css('table').each do |table|
@@ -96,45 +80,63 @@ module Jekyll::Spaceship
       doc.to_html
     end
 
+    def table_scope_data
+      data = OpenStruct.new(_: OpenStruct.new)
+      data.reset = ->(scope, namespace = nil) {
+        data._.marshal_dump.each do |key, val|
+          if namespace == key or namespace.nil?
+            data._[key][scope] = OpenStruct.new
+          end
+        end
+      }
+      data.scope = ->(namespace) {
+        if not data._[namespace]
+          data._[namespace] = OpenStruct.new(
+            table: OpenStruct.new,
+            row: OpenStruct.new
+          )
+        end
+        data._[namespace]
+      }
+      data
+    end
+
     def handle_colspan(data)
       scope = data.scope.call __method__
-      scope_table = scope.table
-      scope_row = scope.row
       cells = data.cells
       cell = data.cell
 
-      if scope_table.row != data.row
-        scope_table.row = data.row
-        scope_row.colspan = 0
+      if scope.table.row != data.row
+        scope.table.row = data.row
+        scope.row.colspan = 0
       end
 
       # handle colspan
       result = cell.content.match(/(\s*\|)+$/)
-      if cell == cells.last and scope_row.colspan > 0
-        range = (cells.count - scope_row.colspan)...cells.count
+      if cell == cells.last and scope.row.colspan > 0
+        range = (cells.count - scope.row.colspan)...cells.count
         for i in range do
           cells[i].remove
         end
       end
       if result
         result = result[0]
-        scope_row.colspan += result.scan(/\|/).count
+        scope.row.colspan += result.scan(/\|/).count
         cell.content = cell.content.gsub(/(\s*\|)+$/, '')
-        cell.set_attribute('colspan', scope_row.colspan + 1)
+        cell.set_attribute('colspan', scope.row.colspan + 1)
       end
     end
 
     def handle_multi_rows(data)
       scope = data.scope.call __method__
-      scope_table = scope.table
       cells = data.cells
       row = data.row
       cell = data.cell
 
-      if scope_table.table != data.table
-        scope_table.table = data.table
-        scope_table.multi_row_cells = nil
-        scope_table.multi_row_start = false
+      if scope.table.table != data.table
+        scope.table.table = data.table
+        scope.table.multi_row_cells = nil
+        scope.table.multi_row_start = false
       end
 
       # handle multi-rows
@@ -143,41 +145,38 @@ module Jekyll::Spaceship
       match = cell.content.match(/(?<!\\)\\\s*$/)
       if match
         cell.content = cell.content.gsub(/(?<!\\)\\\s*$/, '')
-        if not scope_table.multi_row_start
-          scope_table.multi_row_cells = cells
-          scope_table.multi_row_start = true
+        if not scope.table.multi_row_start
+          scope.table.multi_row_cells = cells
+          scope.table.multi_row_start = true
         end
       end
 
-      if scope_table.multi_row_cells != cells and scope_table.multi_row_start
-        for i in 0...scope_table.multi_row_cells.count do
-          multi_row_cell = scope_table.multi_row_cells[i]
+      if scope.table.multi_row_cells != cells and scope.table.multi_row_start
+        for i in 0...scope.table.multi_row_cells.count do
+          multi_row_cell = scope.table.multi_row_cells[i]
           multi_row_cell.content += "  \n#{cells[i].content}"
         end
         row.remove
       end
-      scope_table.multi_row_start = false if not match
+      scope.table.multi_row_start = false if not match
     end
 
     def handle_rowspan(data)
       scope = data.scope.call __method__
-      scope_table = scope.table
-      scope_row = scope.row
       cell = data.cell
       cells = data.cells
 
-      if scope_table.table != data.table
-        scope_table.table = data.table
-        scope_table.span_row_cells = []
+      if scope.table.table != data.table
+        scope.table.table = data.table
+        scope.table.span_row_cells = []
       end
-
-      if scope_row.row != data.row
-        scope_row.row = data.row
-        scope_row.col_index = 0
+      if scope.row.row != data.row
+        scope.row.row = data.row
+        scope.row.col_index = 0
       end
 
       # handle rowspan
-      span_cell = scope_table.span_row_cells[scope_row.col_index]
+      span_cell = scope.table.span_row_cells[scope.row.col_index]
       if span_cell and cell.content.match(/^\s*\^{2}/)
         cell.content = cell.content.gsub(/^\s*\^{2}/, '')
         span_cell.content += "  \n#{cell.content}"
@@ -186,10 +185,9 @@ module Jekyll::Spaceship
         span_cell.set_attribute('rowspan', "#{rowspan}")
         cell.remove
       else
-        scope_table.span_row_cells[scope_row.col_index] = cell
+        scope.table.span_row_cells[scope.row.col_index] = cell
       end
-
-      scope_row.col_index += 1
+      scope.row.col_index += 1
     end
 
     def handle_text_align(data)
@@ -211,7 +209,6 @@ module Jekyll::Spaceship
 
       # handle text align
       return if align == 0
-
       style = cell.get_attribute('style')
       if align == 1
         align = 'text-align: left'
