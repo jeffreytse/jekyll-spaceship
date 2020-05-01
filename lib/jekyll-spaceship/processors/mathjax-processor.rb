@@ -5,7 +5,7 @@ require "nokogiri"
 module Jekyll::Spaceship
   class MathjaxProcessor < Processor
     def process?
-      return true if html?(output_ext)
+      return true if Type.html?(output_ext)
     end
 
     def on_handle_html(content)

@@ -25,17 +25,13 @@ module Jekyll::Spaceship
         next if filename.gsub(/-/, '').downcase != name
 
         Logger.log "use #{filename}"
-
         require path
-
         constants = Jekyll::Spaceship.constants.select do |c|
           c.downcase.to_s == name
         end
 
         next if constants.first.nil?
-
         _class = Jekyll::Spaceship.const_get(constants.first)
-
         next unless _class.is_a? Class
 
         _class.new

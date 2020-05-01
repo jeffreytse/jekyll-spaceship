@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'jekyll-spaceship/cores/logger'
+require 'jekyll-spaceship/cores/manager'
 require 'jekyll-spaceship/cores/processor'
 require 'jekyll-spaceship/cores/register'
 
