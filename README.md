@@ -5,7 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/jeffreytse/jekyll-spaceship/badges/gpa.svg)](https://codeclimate.com/github/jeffreytse/jekyll-spaceship)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/cd56b207f327603662a1/test_coverage)](https://codeclimate.com/github/jeffreytse/jekyll-spaceship/test_coverage)
 
-A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtube, etc.
+A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtube, vimeo, dailymotion, etc.
 
 ## Table of Contents
 
@@ -19,6 +19,8 @@ A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtu
     - [1.4 Cell Alignment](#cell-alignment)
     - [1.5 Cell Markdown](#cell-markdown)
   - [2. MathJax Usage](#2-mathjax-usage)
+    - [2.1 Performance Optimization](#21-performance-optimization)
+    - [2.2 How to use?](#22-how-to-use)
   - [3. PlantUML Usage](#3-plantuml-usage)
   - [4. Video Usage](#4-video-usage)
     - [4.1 Youtube Usage](#youtube-usage)
@@ -384,7 +386,7 @@ Rowspan is 4
 
 [MathJax](http://www.mathjax.org/) is an open-source JavaScript display engine for LaTeX, MathML, and AsciiMath notation that works in all modern browsers.
 
-**Some of the main features of MathJax include:**
+Some of the main features of MathJax include:
 
 - High-quality display of LaTeX, MathML, and AsciiMath notation in HTML pages
 - Supported in most browsers with no plug-ins, extra fonts, or special
@@ -393,6 +395,12 @@ Rowspan is 4
 - Supports math accessibility, cut-and-paste interoperability, and other
   advanced functionality
 - Powerful API for integration with other web applications
+
+#### 2.1 Performance optimization
+
+At building stage, the MathJax engine script will be added by automatically checking whether there is a math expression in the page, this feature can help you improve the page performance  on loading speed.
+
+#### 2.2 How to use?
 
 Put your math expression within \$...\$
 
