@@ -122,10 +122,10 @@ module Jekyll::Spaceship
       end
       if result
         result = result[0]
-        pipecount = result.scan(/\|/).count
+        colspan = result.scan(/\|/).count
         if not skip
-          scope.row.colspan += pipecount
-          cell.set_attribute('colspan', pipecount + 1)
+          scope.row.colspan += colspan
+          cell.set_attribute('colspan', colspan + 1)
         end
         cell.content = cell.content.gsub(/(\s*\|)+$/, '')
       end
