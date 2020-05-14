@@ -20,7 +20,10 @@ module Jekyll::Spaceship
 
       params = "config=TeX-AMS-MML_HTMLorMML"
       src = "//cdn.mathjax.org/mathjax/latest/MathJax.js?#{params}"
-      config = "MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});"
+      config = "MathJax.Hub.Config({ \
+        tex2jax: { inlineMath: [['$','$'], ['\\\\(','\\\\)']] } \
+      });"
+
       head.add_child("<script src=\"#{src}\">#{config}</script>")
 
       doc.to_html
@@ -28,7 +31,10 @@ module Jekyll::Spaceship
 
     def has_mathjax_expression?(doc)
       doc.css('*').each do |node|
-        if node.content.match(/\$.+\$/)
+        if node.content.match(/(?<!\\)\$.+(?<!\\)\$/)
+          return true
+        end
+        if node.content.match(/(?<!\\)\\\(.+(?<!\\)\\\)/)
           return true
         end
       end
