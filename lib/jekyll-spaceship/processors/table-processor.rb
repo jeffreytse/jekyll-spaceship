@@ -93,8 +93,7 @@ module Jekyll::Spaceship
         if not data._[namespace]
           data._[namespace] = OpenStruct.new(
             table: OpenStruct.new,
-            row: OpenStruct.new,
-            cell: OpenStruct.new
+            row: OpenStruct.new
           )
         end
         data._[namespace]
@@ -110,7 +109,6 @@ module Jekyll::Spaceship
       if scope.table.row != data.row
         scope.table.row = data.row
         scope.row.colspan = 0
-        scope.cell.colspan = 0
       end
 
       # handle colspan
@@ -123,12 +121,10 @@ module Jekyll::Spaceship
       end
       if result
         result = result[0]
-        pipecount = result.scan(/\|/).count
-        scope.row.colspan += pipecount
-        scope.cell.colspan += pipecount
+        colspan = result.scan(/\|/).count
+        scope.row.colspan += colspan
         cell.content = cell.content.gsub(/(\s*\|)+$/, '')
-        cell.set_attribute('colspan', scope.cell.colspan + 1)
-        scope.cell.colspan = 0
+        cell.set_attribute('colspan', colspan + 1)
       end
     end
 
