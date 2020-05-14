@@ -113,6 +113,7 @@ module Jekyll::Spaceship
 
       # handle colspan
       result = cell.content.match(/(\s*\|)+$/)
+      skip = cell.content.match(/^\s*\^{2}/)
       if cell == cells.last and scope.row.colspan > 0
         range = (cells.count - scope.row.colspan)...cells.count
         for i in range do
@@ -121,10 +122,12 @@ module Jekyll::Spaceship
       end
       if result
         result = result[0]
-        colspan = result.scan(/\|/).count
-        scope.row.colspan += colspan
+        pipecount = result.scan(/\|/).count
+        if not skip
+          scope.row.colspan += pipecount
+          cell.set_attribute('colspan', pipecount + 1)
+        end
         cell.content = cell.content.gsub(/(\s*\|)+$/, '')
-        cell.set_attribute('colspan', colspan + 1)
       end
     end
 
@@ -174,6 +177,7 @@ module Jekyll::Spaceship
       if scope.row.row != data.row
         scope.row.row = data.row
         scope.row.col_index = 0
+        scope.row.surplus_cols = 0
       end
 
       # handle rowspan
@@ -185,10 +189,22 @@ module Jekyll::Spaceship
         rowspan = rowspan.to_i + 1
         span_cell.set_attribute('rowspan', "#{rowspan}")
         cell.remove
+        colspan = span_cell.get_attribute('colspan') || 1
+        scope.row.surplus_cols += colspan.to_i - 1
+        scope.row.col_index += colspan.to_i - 1
       else
         scope.table.span_row_cells[scope.row.col_index] = cell
+        colspan = cell.get_attribute('colspan') || 1
+        scope.row.col_index += colspan.to_i - 1
       end
       scope.row.col_index += 1
+
+      if cell == cells.last and scope.row.surplus_cols > 0
+        range = (cells.count - scope.row.surplus_cols)...cells.count
+        for i in range do
+          cells[i].remove
+        end
+      end
     end
 
     def handle_text_align(data)
