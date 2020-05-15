@@ -189,7 +189,7 @@ module Jekyll::Spaceship
       else
         scope.table.span_row_cells[scope.row.col_index] = cell
       end
-      scope.row.col_index += 1
+      scope.row.col_index += [cell.get_attribute('colspan').to_i, 1].max
     end
 
     def handle_text_align(data)
