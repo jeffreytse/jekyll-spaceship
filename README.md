@@ -1,9 +1,59 @@
-# jekyll-spaceship
+<h1 align="center">
+  <a href="https://github.com/jeffreytse/jekyll-spaceship">
+    <img alt="spaceship →~ jekyll" src="https://raw.githubusercontent.com/jeffreytse/jekyll-spaceship/master/logos/jekyll-spaceship-logo.png" width="400">
+  </a>
+  <br> 🚀 Jekyll Spaceship 🚀 <br>
+</h1>
 
-[![Build Status](https://travis-ci.org/jeffreytse/jekyll-spaceship.svg?branch=master)](https://travis-ci.org/jeffreytse/jekyll-spaceship)
-[![Gem Version](https://badge.fury.io/rb/jekyll-spaceship.svg)](http://badge.fury.io/rb/jekyll-spaceship)
-[![Code Climate](https://codeclimate.com/github/jeffreytse/jekyll-spaceship/badges/gpa.svg)](https://codeclimate.com/github/jeffreytse/jekyll-spaceship)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/cd56b207f327603662a1/test_coverage)](https://codeclimate.com/github/jeffreytse/jekyll-spaceship/test_coverage)
+<h4 align="center">
+  <a href="https://jekyllrb.org" target="_blank"><code>Jekyll</code></a> plugin for Astronauts.
+</h4>
+
+<p align="center">
+
+  <a href="https://travis-ci.org/jeffreytse/jekyll-spaceship">
+    <img src="https://travis-ci.org/jeffreytse/jekyll-spaceship.svg?branch=master"
+      alt="CI Status" />
+  </a>
+
+  <a href="http://badge.fury.io/rb/jekyll-spaceship">
+    <img src="https://badge.fury.io/rb/jekyll-spaceship.svg"
+      alt="Gem Version" />
+  </a>
+
+  <a href="https://codeclimate.com/github/jeffreytse/jekyll-spaceship">
+    <img src="https://codeclimate.com/github/jeffreytse/jekyll-spaceship/badges/gpa.svg"
+      alt="Code Climate" />
+  </a>
+
+  <a href="https://codeclimate.com/github/jeffreytse/jekyll-spaceship/test_coverage">
+    <img src="https://api.codeclimate.com/v1/badges/cd56b207f327603662a1/test_coverage"
+      alt="Test Coverage" />
+  </a>
+
+  <a href="https://patreon.com/jeffreytse">
+    <img src="https://img.shields.io/badge/support-patreon-F96854.svg?style=flat-square"
+      alt="Donate" />
+  </a>
+</p>
+
+<div align="center">
+  <h4>
+    <a href="#requirements">Requirements</a> |
+    <a href="#installation">Install</a> |
+    <a href="#usage">Usage</a> |
+    <a href="#credits">Credits</a> |
+    <a href="#license">License</a>
+  </h4>
+</div>
+
+<div align="center">
+  <sub>Built with ❤︎ by
+  <a href="https://jeffreytse.net">jeffreytse</a> and
+  <a href="https://github.com/jeffreytse/jekyll-spaceship/graphs/contributors">contributors </a>
+</div>
+<br>
+
 
 A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtube, vimeo, dailymotion, etc.
 
