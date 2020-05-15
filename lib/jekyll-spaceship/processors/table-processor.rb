@@ -112,20 +112,21 @@ module Jekyll::Spaceship
       end
 
       # handle colspan
-      result = cell.content.match(/(\s*\|)+$/)
       if cell == cells.last and scope.row.colspan > 0
         range = (cells.count - scope.row.colspan)...cells.count
         for i in range do
           cells[i].remove
         end
       end
-      if result
-        result = result[0]
-        colspan = result.scan(/\|/).count
-        scope.row.colspan += colspan
-        cell.content = cell.content.gsub(/(\s*\|)+$/, '')
-        cell.set_attribute('colspan', colspan + 1)
-      end
+
+      result = cell.content.match(/(\s*\|)+$/)
+      return if result.nil?
+
+      cell.content = cell.content.gsub(/(\s*\|)+$/, '')
+      result = result[0]
+      colspan = result.scan(/\|/).count
+      scope.row.colspan += colspan
+      cell.set_attribute('colspan', colspan + 1)
     end
 
     def handle_multi_rows(data)
