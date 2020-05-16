@@ -17,16 +17,21 @@ module Jekyll::Spaceship
     @@_priority = nil
 
     attr_reader :page
+    attr_reader :logger
     attr_reader :priority
     attr_reader :registers
     attr_reader :exclusions
     attr_accessor :handled
 
+    def name
+      self.class.name.split('::').last
+    end
+
     def initialize()
       self.initialize_priority
       self.initialize_register
       self.initialize_exclusions
-      Manager.add self
+      @logger = Logger.new(self.name)
     end
 
     def initialize_priority
@@ -122,9 +127,8 @@ module Jekyll::Spaceship
     end
 
     def on_handled
-      processor = self.class.name.split('::').last
       file = page.path.gsub(/.*_posts\//, '')
-      Logger.log "[#{processor}] #{file}"
+      logger.log file
     end
 
     def pre_exclude(content)

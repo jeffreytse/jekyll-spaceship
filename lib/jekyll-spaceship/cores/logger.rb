@@ -4,6 +4,10 @@ require 'jekyll-spaceship/version'
 
 module Jekyll::Spaceship
   class Logger
+    def initialize(namespace)
+      @namespace = namespace
+    end
+
     def self.display_info
       self.log "Jekyll-Spaceship #{Jekyll::Spaceship::VERSION}"
       self.log 'A Jekyll plugin to provide powerful supports.'
@@ -16,6 +20,14 @@ module Jekyll::Spaceship
 
     def self.output(title, content)
       puts "#{title.rjust(18)}: #{content}"
+    end
+
+    def log(content)
+      if @namespace.nil?
+        self.class.log content
+      else
+        self.class.log "[#{@namespace}] #{content}"
+      end
     end
   end
 end

@@ -34,7 +34,7 @@ module Jekyll::Spaceship
         _class = Jekyll::Spaceship.const_get(constants.first)
         next unless _class.is_a? Class
 
-        _class.new
+        Manager.add _class.new
       end
     end
   end
