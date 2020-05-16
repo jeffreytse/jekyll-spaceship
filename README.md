@@ -530,7 +530,7 @@ the link as below:
 ```
 
 ```markdown
-![](https://www.dailymotion.com/video/x7tfyq3?width=100%&height=400)
+![](https://www.dailymotion.com/video/x7tfyq3?width=100%&height=400&autoplay=1)
 ```
 
 #### Youtube Usage
