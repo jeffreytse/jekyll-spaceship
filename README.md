@@ -80,7 +80,7 @@
 <br>
 
 
-A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtube, vimeo, dailymotion, etc.
+A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, emoji, youtube, vimeo, dailymotion, etc.
 
 ## Table of Contents
 
@@ -104,6 +104,7 @@ A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, youtu
   - [5. Hybrid HTML with Markdown](#5-hybrid-html-with-markdown)
   - [6. Markdown Polyfill](#6-markdown-polyfill)
     - [6.1 Escape Ordered List](#escape-ordered-list)
+  - [7. Emoji Usage](#7-emoji-usage)
 - [Credits](#credits)
 - [Contributing](#contributing)
 - [License](#license)
@@ -664,11 +665,27 @@ Escaped:
 10. List item Cafe.
 ```
 
+### 7. Emoji Usage
+GitHub-flavored emoji images and names would allow emojifying content such as: it's raining :cat:s and :dog:s!
+
+Noted that emoji images are served from the GitHub.com CDN, with a base URL of [https://github.githubassets.com](https://github.githubassets.com), which results in emoji image URLs like [https://github.githubassets.com/images/icons/emoji/unicode/1f604.png](https://github.githubassets.com/images/icons/emoji/unicode/1f604.png).
+
+In any page or post, use emoji as you would normally, e.g.
+
+```
+I give this plugin two :+1:!
+```
+
+**Code above would be parsed as:**
+
+I give this plugin two :+1:!
+
 ## Credits
 
 - [Jekyll](https://github.com/jekyll/jekyll) - A blog-aware static site generator in Ruby.
 - [MultiMarkdown](https://fletcher.github.io/MultiMarkdown-6) - Lightweight markup processor to produce HTML, LaTeX, and more.
 - [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) - Multimarkdown table syntax plugin for markdown-it markdown parser.
+- [jmoji](https://github.com/jekyll/jemoji) - GitHub-flavored emoji plugin for Jekyll.
 
 ## Contributing
 
