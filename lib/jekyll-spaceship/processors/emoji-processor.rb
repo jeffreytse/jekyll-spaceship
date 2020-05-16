@@ -26,13 +26,25 @@ module Jekyll::Spaceship
         emoji_image = EMOJI_MARKUP_DATA[emoji_markup]
         next if emoji_image.nil?
         self.handled = true
+
+        # convert hex string to unicode
+        unicode = emoji_image.match(/unicode\/([\d\w]+)/)
+        if unicode[1]
+          unicode = "0x#{unicode[1]}".to_i(16)
+          alt = [unicode].pack('U*')
+        end
+        alt = emoji_markup if alt.nil?
+
         content = content.gsub(
           ":#{emoji_markup}:",
           "<image class=\"emoji\" \
             title=\"#{emoji_markup}\" \
-            alt=\"#{emoji_markup}\" \
+            alt=\"#{alt}\" \
             src=\"#{emoji_image}\" \
-            style=\"vertical-align: middle; width: 1em;\"> \
+            style=\"vertical-align: middle; \
+            max-width: 1em; visibility: hidden;\" \
+            onload=\"this.style.visibility='visible'\" \
+            onerror=\"this.replaceWith(this.alt)\"> \
           </image>"
         )
       end
