@@ -12,4 +12,5 @@ module Jekyll::Spaceship
   Register.use 'plantuml-processor'
   Register.use 'polyfill-processor'
   Register.use 'video-processor'
+  Register.use 'emoji-processor'
 end
