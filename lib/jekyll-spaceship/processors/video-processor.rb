@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'uri'
+
 module Jekyll::Spaceship
   class VideoProcessor < Processor
     def on_handle_markdown(content)
@@ -70,22 +72,26 @@ module Jekyll::Spaceship
         url = match_data[2]
         id = match_data[4]
         title = match_data[6]
-        width = url.match(/(?<=width=)(\S*?)(?=&|$)/)
-        height = url.match(/(?<=height=)(\S*?)(?=&|$)/)
+        qs = url.match(/(?<=\?)(\S*?)$/)
+        qs = Hash[URI.decode_www_form(qs.to_s)].reject do |k, v|
+          next true if v == id or v == ''
+        end
 
-        data[:width] = 600 if data[:width].nil?
-        data[:height] = 400 if data[:height].nil?
+        width = qs['width'] || data[:width] || 600
+        height = qs['height'] || data[:height] || 400
         style = "max-width: 100%" if width.nil?
-        width = data[:width] if width.nil?
-        height = data[:height] if height.nil?
 
-        url = "#{iframe_url}#{id}"
+        url = URI("#{iframe_url}#{id}").tap do |v|
+          v.query = URI.encode_www_form(qs) if qs.size > 0
+        end
+
         html = "<iframe \
           src=\"#{url}\" \
           title=\"#{title}\" \
           width=\"#{width}\" \
           height=\"#{height}\" \
           style=\"#{style}\" \
+          allow=\"autoplay; encrypted-media\" \
           frameborder=\"0\" \
           allowfullscreen=\"\">\
           </iframe>"
