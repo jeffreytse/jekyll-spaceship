@@ -31,7 +31,21 @@
       alt="Test Coverage" />
   </a>
 
-  <a href="https://patreon.com/jeffreytse">
+  <a href="https://github.com/jeffreytse/jekyll-spaceship/blob/master/LICENSE.txt">
+    <img src="https://img.shields.io/badge/License-MIT-brightgreen.svg"
+      alt="License" />
+  </a>
+
+  <a href="http://badge.fury.io/rb/jekyll-spaceship">
+    <img src="https://img.shields.io/gem/dt/jekyll-spaceship"
+      alt="Download Data" />
+  </a>
+
+</p>
+
+<p align="center">
+
+  <a href="https://liberapay.com/jeffreytse">
     <img src="http://img.shields.io/liberapay/goal/jeffreytse.svg?logo=liberapay"
       alt="Donate (Liberapay)" />
   </a>
@@ -39,6 +53,11 @@
   <a href="https://patreon.com/jeffreytse">
     <img src="https://img.shields.io/badge/support-patreon-F96854.svg?style=flat-square"
       alt="Donate (Patreon)" />
+  </a>
+
+  <a href="https://ko-fi.com/jeffreytse">
+    <img height="20" src="https://www.ko-fi.com/img/githubbutton_sm.svg"
+      alt="Donate (Ko-fi)" />
   </a>
 
 </p>
