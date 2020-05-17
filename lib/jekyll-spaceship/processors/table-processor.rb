@@ -113,16 +113,17 @@ module Jekyll::Spaceship
 
       # handle colspan
       if cell == cells.last and scope.row.colspan > 0
-        range = (cells.count - scope.row.colspan)...cells.count
-        for i in range do
-          cells[i].remove
+        cells.count.downto(cells.count - scope.row.colspan + 1) do |i|
+          c = cells[i - 1]
+          return unless c.get_attribute('colspan').nil?
+          c.remove
         end
       end
 
-      result = cell.content.match(/(\s*\|)+$/)
+      result = cell.content.match(/(\|)+$/)
       return if result.nil?
 
-      cell.content = cell.content.gsub(/(\s*\|)+$/, '')
+      cell.content = cell.content.gsub(/(\|)+$/, '')
       result = result[0]
       colspan = result.scan(/\|/).count
       scope.row.colspan += colspan
