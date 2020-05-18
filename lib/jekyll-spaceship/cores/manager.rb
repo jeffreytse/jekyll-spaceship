@@ -6,7 +6,7 @@ require __dir__ + '/type'
 module Jekyll::Spaceship
   class Manager
     @@_hooks = {}
-    @@_processers = []
+    @@_processors = []
 
     def self.add(processor)
       # register for listening event
@@ -21,8 +21,8 @@ module Jekyll::Spaceship
           self.hook container, event
         end
       end
-      @@_processers.push(processor)
-      @@_processers = @@_processers.sort { |a, b| b.priority <=> a.priority }
+      @@_processors.push(processor)
+      @@_processors = @@_processors.sort { |a, b| b.priority <=> a.priority }
     end
 
     def self.hook(container, event, &block)
@@ -57,13 +57,13 @@ module Jekyll::Spaceship
     end
 
     def self.dispatch(page, container, event)
-      @@_processers.each do |processor|
+      @@_processors.each do |processor|
         processor.dispatch page, container, event
       end
       if event.to_s.start_with?('post') and Type.html? output_ext(page)
         self.dispatch_html_block(page)
       end
-      @@_processers.each do |processor|
+      @@_processors.each do |processor|
         processor.on_handled if processor.handled
       end
     end
@@ -91,7 +91,7 @@ module Jekyll::Spaceship
         next if type.nil?
 
         # dispatch to on_handle_html_block
-        @@_processers.each do |processor|
+        @@_processors.each do |processor|
           next unless processor.process?
           content = processor.on_handle_html_block content, type
           # dispatch to type handlers
@@ -106,7 +106,7 @@ module Jekyll::Spaceship
         content = cvter.convert content unless cvter.nil?
 
         # dispatch to on_handle_html
-        @@_processers.each do |processor|
+        @@_processors.each do |processor|
           next unless processor.process?
           content = processor.on_handle_html content
         end
