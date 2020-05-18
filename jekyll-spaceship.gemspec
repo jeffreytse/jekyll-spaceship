@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "jekyll", ">= 3.6", "< 5.0"
   spec.add_dependency "nokogiri", "~> 1.6"
+  spec.add_dependency "rainbow", "~> 3.0"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake", "~> 12.0"

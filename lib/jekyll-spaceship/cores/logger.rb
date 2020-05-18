@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'jekyll-spaceship/version'
+require 'rainbow/refinement'
+
+using Rainbow
 
 module Jekyll::Spaceship
   class Logger
@@ -9,13 +12,13 @@ module Jekyll::Spaceship
     end
 
     def self.display_info
-      self.log "Jekyll-Spaceship #{Jekyll::Spaceship::VERSION}"
-      self.log 'A Jekyll plugin to provide powerful supports.'
-      self.log 'https://github.com/jeffreytse/jekyll-spaceship'
+      self.log "🚀 Jekyll-Spaceship #{Jekyll::Spaceship::VERSION}"
+      self.log '🎉 A Jekyll plugin to provide powerful supports.'
+      self.log '👉 ' + 'https://github.com/jeffreytse/jekyll-spaceship'.underline
     end
 
     def self.log(content)
-      self.output 'Jekyll Spaceship', content
+      self.output 'Jekyll Spaceship', content.bright
     end
 
     def self.output(title, content)

@@ -24,7 +24,7 @@ module Jekyll::Spaceship
         filename = File.basename(path, '.rb')
         next if filename.gsub(/-/, '').downcase != name
 
-        Logger.log "use #{filename}"
+        Logger.log "🗂  use #{filename}"
         require path
         constants = Jekyll::Spaceship.constants.select do |c|
           c.downcase.to_s == name
