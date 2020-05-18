@@ -82,6 +82,13 @@
 
 A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, emoji, youtube, vimeo, dailymotion, etc.
 
+<p align="center">
+    <img alt="Jekyll Spaceship Demo" src="https://user-images.githubusercontent.com/9413601/82250463-15451780-997e-11ea-8809-f411586d9508.gif" alt="Donate (Ko-fi)" />
+</p>
+
+**💡 Tip:** I hope you enjoy using this plugin. If you like this project, **a little star** for it is your way make a clear statement: **My work is valued**. I would appreciate your support! _Thank you!_
+
+
 ## Table of Contents
 
 - [Requirements](#requirements)
@@ -127,6 +134,8 @@ Add jekyll-spaceship to the `gems:` section in your site's `_config.yml`.
 plugins:
   - jekyll-spaceship
 ```
+
+**💡 Tip:** Note that GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](https://pages.github.com/versions/). To use the gem in GitHub Pages, you need to build locally or use CI (e.g. [travis](https://travis-ci.org/), [github workflow](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow)) and deploy to your `gh-pages` branch. [Click here for more information.](https://jekyllrb.com/docs/continuous-integration/github-actions/)
 
 ## Usage
 
