@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require "base64"
+
 module Jekyll::Spaceship
   class PlantUMLProcessor < Processor
     exclude :none
+
+    PLANT_UML_HOST = 'http://www.plantuml.com/plantuml/png/'
 
     def on_handle_markdown(content)
       # match default plantuml block and code block
@@ -35,18 +39,28 @@ module Jekyll::Spaceship
 
     def handle_plantuml(code)
       # wrap plantuml code
-      uml = "@startuml#{code}@enduml"
+      code = "@startuml#{code}@enduml".encode('UTF-8')
 
-      dir = File.dirname(__FILE__)
-      jar = dir + "/../utils/plantuml/plantuml.jar"
-      echo = "echo -e \"#{uml.gsub('"', '\"')}\""
-      plantuml = "java -jar \"#{jar}\" -pipe 2>/dev/null"
-
-      # exec plantuml.jar and output base64 data
-      base64 = `#{echo} | #{plantuml} | base64`
+      # encode to hex string
+      code = '~h' + code.unpack("H*").first
+      data = self.get_plantuml_img_data(code)
 
       # return img tag
-      "<img src=\"data:image/png;base64, #{base64}\">"
+      "<img src=\"#{data}\">"
+    end
+
+    def get_plantuml_img_data(code)
+      data = ''
+      url = "#{PLANT_UML_HOST}#{code}"
+      begin
+        data = Net::HTTP.get URI(url)
+        data = Base64.encode64(data)
+        data = "data:image/png;base64, #{data}"
+      rescue StandardError => msg
+        data = url
+        logger.log msg
+      end
+      data
     end
   end
 end
