@@ -15,7 +15,7 @@ module Jekyll::Spaceship
         events = _register.last.uniq
         events = events.select do |event|
           next true if event.match(/^post/)
-          next !events.any?(event.to_s.gsub(/^pre/, 'post').to_sym)
+          next events.index(event.to_s.gsub(/^pre/, 'post').to_sym).nil?
         end
         events.each do |event|
           self.hook container, event
