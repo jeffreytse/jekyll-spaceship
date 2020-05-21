@@ -86,6 +86,7 @@ module Jekyll::Spaceship
         end
 
         html = "<iframe \
+          class=\"video\" \
           src=\"#{url}\" \
           title=\"#{title}\" \
           width=\"#{width}\" \

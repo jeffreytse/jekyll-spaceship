@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "net/http"
 require "base64"
 
 module Jekyll::Spaceship
@@ -46,7 +47,7 @@ module Jekyll::Spaceship
       data = self.get_plantuml_img_data(code)
 
       # return img tag
-      "<img src=\"#{data}\">"
+      "<img class=\"plantuml\" src=\"#{data}\">"
     end
 
     def get_plantuml_img_data(code)
