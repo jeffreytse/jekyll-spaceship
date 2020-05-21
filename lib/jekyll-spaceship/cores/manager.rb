@@ -113,7 +113,7 @@ module Jekyll::Spaceship
         end
         node.replace Nokogiri::HTML.fragment content
       end
-      page.output = doc.to_html
+      page.output = Processor.escape_html doc.to_html
     end
   end
 end

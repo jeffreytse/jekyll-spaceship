@@ -112,6 +112,9 @@ module Jekyll::Spaceship
         end
         if self.respond_to? method
           @page.output = self.send method, @page.output
+          if Type.html? output_ext
+            @page.output = self.class.escape_html(@page.output)
+          end
         end
       end
     end
@@ -156,6 +159,16 @@ module Jekyll::Spaceship
         content = content.gsub("[//]: JEKYLL_EXCLUDE_##{id}", match)
       end
       @exclusion_store = []
+      content
+    end
+
+    def self.escape_html(content)
+      # escape link
+      content.scan(/((https?:)?\/\/\S+\?[a-zA-Z0-9%\-_=\.&;]+)/) do |result|
+        result = result[0]
+        link = result.gsub('&amp;', '&')
+        content = content.gsub(result, link)
+      end
       content
     end
   end
