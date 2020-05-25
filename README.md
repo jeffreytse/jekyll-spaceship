@@ -128,14 +128,14 @@ Add jekyll-spaceship plugin in your site's `Gemfile`, and run `bundle install`.
 gem 'jekyll-spaceship'
 ```
 
-Add jekyll-spaceship to the `gems:` section in your site's `_config.yml`.
+Add jekyll-spaceship to the `plugins:` section in your site's `_config.yml`.
 
 ```yml
 plugins:
   - jekyll-spaceship
 ```
 
-**💡 Tip:** Note that GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](https://pages.github.com/versions/). To use the gem in GitHub Pages, you need to build locally or use CI (e.g. [travis](https://travis-ci.org/), [github workflow](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow)) and deploy to your `gh-pages` branch. [Click here for more information.](https://jekyllrb.com/docs/continuous-integration/github-actions/)
+**💡 Tip:** Note that GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](https://pages.github.com/versions/). To use the gem in GitHub Pages, you need to build locally or use CI (e.g. [travis](https://travis-ci.org/), [github workflow](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow)) and deploy to your `gh-pages` branch. [Click here for more information.](https://jekyllrb.com/docs/continuous-integration/github-actions/) (e.g. [https://github.com/jeffreytse/jekyll-jeffreytse-blog](https://github.com/jeffreytse/jekyll-jeffreytse-blog))
 
 ## Usage
 
@@ -501,6 +501,10 @@ $ 2^{\frac{n-1}{3}} $
 $ \int\_a^b f(x)\,dx. $
 ```
 
+Code above would be parsed as:
+
+<image alt="MathJax Expression" height="180" src="https://user-images.githubusercontent.com/9413601/82814245-5a5ed180-9ec9-11ea-9d5b-fba303c627ac.png"></image>
+
 ### 3. PlantUML Usage
 
 [PlantUML](http://plantuml.sourceforge.net/) is a component that allows to quickly write:
@@ -528,6 +532,10 @@ or
 Bob -> Alice : hello
 @enduml
 ```
+
+Code above would be parsed as:
+
+![PlantUML Diagram](https://user-images.githubusercontent.com/9413601/82813883-9180b300-9ec8-11ea-8778-f450e0056938.png)
 
 ### 4. Video Usage
 
