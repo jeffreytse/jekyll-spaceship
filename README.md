@@ -64,8 +64,8 @@
 
 <div align="center">
   <h4>
-    <a href="#requirements">Requirements</a> |
     <a href="#installation">Install</a> |
+    <a href="#configuration">Config</a> |
     <a href="#usage">Usage</a> |
     <a href="#credits">Credits</a> |
     <a href="#license">License</a>
@@ -93,6 +93,7 @@ A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, emoji
 
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Usage](#usage)
   - [1. Table Usage](#1-table-usage)
     - [1.1 Rowspan and Colspan](#rowspan-and-colspan)
@@ -136,6 +137,33 @@ plugins:
 ```
 
 **💡 Tip:** Note that GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](https://pages.github.com/versions/). To use the gem in GitHub Pages, you need to build locally or use CI (e.g. [travis](https://travis-ci.org/), [github workflow](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow)) and deploy to your `gh-pages` branch. [Click here for more information.](https://jekyllrb.com/docs/continuous-integration/github-actions/) (e.g. [https://github.com/jeffreytse/jekyll-jeffreytse-blog](https://github.com/jeffreytse/jekyll-jeffreytse-blog))
+
+## Configuration
+
+This plugin runs with the following configuration options by default. Alternative settings for these options can be explicitly specified in the configuration file `_config.yml`.
+
+```yml
+# Where things are
+jekyll-spaceship:
+  processors:
+    - table-processor
+    - mathjax-processor
+    - plantuml-processor
+    - polyfill-processor
+    - video-processor
+    - emoji-processor
+  mathjax-processor:
+    src:  //cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+    config:
+      tex2jax:
+        inlineMath:
+          - ['$','$']
+          - ['\(','\)']
+  plantuml-processor:
+    src: http://www.plantuml.com/plantuml/png/
+  emoji-processor:
+    src: https://github.githubassets.com/images/icons/emoji/
+```
 
 ## Usage
 
