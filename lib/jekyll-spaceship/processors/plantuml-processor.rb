@@ -4,10 +4,8 @@ require "net/http"
 require "base64"
 
 module Jekyll::Spaceship
-  class PlantUMLProcessor < Processor
+  class PlantumlProcessor < Processor
     exclude :none
-
-    PLANT_UML_HOST = 'http://www.plantuml.com/plantuml/png/'
 
     def on_handle_markdown(content)
       # match default plantuml block and code block
@@ -52,7 +50,7 @@ module Jekyll::Spaceship
 
     def get_plantuml_img_data(code)
       data = ''
-      url = "#{PLANT_UML_HOST}#{code}"
+      url = "#{config['src']}#{code}"
       begin
         data = Net::HTTP.get URI(url)
         data = Base64.encode64(data)

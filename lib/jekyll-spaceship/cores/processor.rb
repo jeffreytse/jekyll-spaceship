@@ -18,6 +18,7 @@ module Jekyll::Spaceship
 
     attr_reader :page
     attr_reader :logger
+    attr_reader :config
     attr_reader :priority
     attr_reader :registers
     attr_reader :exclusions
@@ -27,11 +28,20 @@ module Jekyll::Spaceship
       self.class.name.split('::').last
     end
 
+    def filename
+      self.name
+        .gsub(/([A-Z]+)([A-Z][a-z])/,'\1-\2')
+        .gsub(/([a-z\d])([A-Z])/,'\1-\2')
+        .tr("_", "-")
+        .downcase
+    end
+
     def initialize()
       self.initialize_priority
       self.initialize_register
       self.initialize_exclusions
       @logger = Logger.new(self.name)
+      @config = Config.store(self.filename)
     end
 
     def initialize_priority

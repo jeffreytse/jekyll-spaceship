@@ -6,8 +6,6 @@ require 'gemoji'
 
 module Jekyll::Spaceship
   class EmojiProcessor < Processor
-    EMOJI_MARKUP_HOST = 'https://github.githubassets.com/images/icons/emoji/'
-
     def on_handle_html(content)
       # handle emoji markup
       content.scan(/:([\w\d+-]+):/) do |match|
@@ -24,7 +22,7 @@ module Jekyll::Spaceship
             title=\":#{emoji.name}:\" \
             alt=\":#{emoji.name}:\" \
             raw=\"#{emoji.raw}\" \
-            src=\"#{EMOJI_MARKUP_HOST}#{emoji.image_filename}\" \
+            src=\"#{config['src']}#{emoji.image_filename}\" \
             style=\"vertical-align: middle; \
             max-width: 1em; visibility: hidden;\" \
             onload=\"this.style.visibility='visible'\" \

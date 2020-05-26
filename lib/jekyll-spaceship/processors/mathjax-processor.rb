@@ -18,13 +18,8 @@ module Jekyll::Spaceship
 
       self.handled = true
 
-      params = "config=TeX-AMS-MML_HTMLorMML"
-      src = "//cdn.mathjax.org/mathjax/latest/MathJax.js?#{params}"
-      config = "MathJax.Hub.Config({ \
-        tex2jax: { inlineMath: [['$','$'], ['\\\\(','\\\\)']] } \
-      });"
-
-      head.add_child("<script src=\"#{src}\">#{config}</script>")
+      cfg = "MathJax.Hub.Config(#{config['config'].to_json});"
+      head.add_child("<script src=\"#{config['src']}\">#{cfg}</script>")
 
       doc.to_html
     end
