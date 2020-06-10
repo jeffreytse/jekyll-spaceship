@@ -157,7 +157,7 @@ module Jekyll::Spaceship
       if scope.table.multi_row_cells != cells and scope.table.multi_row_start
         for i in 0...scope.table.multi_row_cells.count do
           multi_row_cell = scope.table.multi_row_cells[i]
-          multi_row_cell.content += "  \n#{cells[i].content}"
+          multi_row_cell.inner_html += "<br>#{cells[i].inner_html}"
         end
         row.remove
       end
@@ -182,7 +182,7 @@ module Jekyll::Spaceship
       span_cell = scope.table.span_row_cells[scope.row.col_index]
       if span_cell and cell.content.match(/^\s*\^{2}/)
         cell.content = cell.content.gsub(/^\s*\^{2}/, '')
-        span_cell.content += "  \n#{cell.content}"
+        span_cell.inner_html += "<br>#{cell.inner_html}"
         rowspan = span_cell.get_attribute('rowspan') || 1
         rowspan = rowspan.to_i + 1
         span_cell.set_attribute('rowspan', "#{rowspan}")
@@ -207,11 +207,12 @@ module Jekyll::Spaceship
         align += 2
       end
 
+      # handle text align
+      return if align == 0
+
       # handle escape colon
       cell.content = cell.content.gsub(/\\:/, ':')
 
-      # handle text align
-      return if align == 0
       style = cell.get_attribute('style')
       if align == 1
         align = 'text-align: left'
@@ -234,8 +235,10 @@ module Jekyll::Spaceship
       cell = data.cell
       cvter = self.converter('markdown')
       return if cvter.nil?
-      content = cell.content.gsub(/(?<!\\)\|/, '\\|')
-      content = cvter.convert(content.strip)
+      content = cell.inner_html
+        .gsub(/(?<!\\)\|/, '\\|')
+        .gsub(/^\s+|\s+$/, '')
+      content = cvter.convert(content)
       cell.inner_html = Nokogiri::HTML.fragment(content)
     end
   end
