@@ -41,7 +41,7 @@ module Jekyll::Spaceship
       self.initialize_register
       self.initialize_exclusions
       @logger = Logger.new(self.name)
-      @config = Config.store(self.filename)
+      @config = Config.store(self.filename, self.class.config)
       @handled_files = {}
     end
 
@@ -81,6 +81,9 @@ module Jekyll::Spaceship
 
     def self.exclude(*types)
       @@_exclusions = types
+    end
+
+    def self.config
     end
 
     def process?

@@ -13,19 +13,7 @@ module Jekyll::Spaceship
         'polyfill-processor',
         'video-processor',
         'emoji-processor'
-      ],
-      'mathjax-processor' => {
-        'src' => '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
-        'config' => {
-          'tex2jax' => { 'inlineMath' => [['$','$'], ['\\(','\\)']] }
-        }
-      },
-      'plantuml-processor' => {
-        'src' => 'http://www.plantuml.com/plantuml/png/'
-      },
-      'emoji-processor' => {
-        'src' => 'https://github.githubassets.com/images/icons/emoji/'
-      }
+      ]
     }
 
     @@store = {}
@@ -43,8 +31,10 @@ module Jekyll::Spaceship
       first.merge(second.to_h, &merger)
     end
 
-    def self.store(section)
-      @@store[section]
+    def self.store(section, default)
+      return if @@store[section].nil?
+      return @@store[section] if default.nil?
+      @@store[section] = deep_merge(@@store[section], default)
     end
 
     def self.load(filename = '_config.yml')

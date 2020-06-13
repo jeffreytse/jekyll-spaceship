@@ -4,6 +4,15 @@ require "nokogiri"
 
 module Jekyll::Spaceship
   class MathjaxProcessor < Processor
+    def self.config
+      {
+        'src' => '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+        'config' => {
+          'tex2jax' => { 'inlineMath' => [['$','$'], ['\\(','\\)']] }
+        }
+      }
+    end
+
     def process?
       return true if Type.html?(output_ext)
     end

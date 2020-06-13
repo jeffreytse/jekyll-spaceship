@@ -7,6 +7,10 @@ module Jekyll::Spaceship
   class PlantumlProcessor < Processor
     exclude :none
 
+    def self.config
+      { 'src' => 'http://www.plantuml.com/plantuml/png/' }
+    end
+
     def on_handle_markdown(content)
       # match default plantuml block and code block
       pattern = Regexp.union(
