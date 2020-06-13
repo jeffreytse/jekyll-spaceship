@@ -92,7 +92,7 @@ module Jekyll::Spaceship
         width = qs['width'] || data[:width] || "100%"
         height = qs['height'] || data[:height] || 350
         frameborder = qs['frameborder'] || 0
-        style = qs['style'] || ''
+        style = qs['style'] || 'max-width: 600px'
         allow = qs['allow'] || "encrypted-media; picture-in-picture"
 
         url = URI(iframe_url ? "#{iframe_url}#{id}" : url).tap do |v|
