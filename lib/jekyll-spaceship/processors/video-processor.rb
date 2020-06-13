@@ -30,7 +30,7 @@ module Jekyll::Spaceship
         host: '(https?:)?\\/\\/vimeo\\.com\\/',
         id: '([0-9]+)',
         iframe_url: "https://player.vimeo.com/video/",
-        width: 600,
+        width: "100%",
         height: 350
       })
     end
@@ -77,25 +77,30 @@ module Jekyll::Spaceship
           next true if v == id or v == ''
         end
 
-        width = qs['width'] || data[:width] || 600
+        css_id = qs['id'] || "video-#{id}"
+        css_class = qs['class'] || 'video'
+        width = qs['width'] || data[:width] || "100%"
         height = qs['height'] || data[:height] || 400
-        style = "max-width: 100%" if width.nil?
+        frameborder = qs['frameborder'] || 0
+        style = qs['style'] || ''
+        allow = qs['allow'] || "autoplay; encrypted-media"
 
         url = URI("#{iframe_url}#{id}").tap do |v|
           v.query = URI.encode_www_form(qs) if qs.size > 0
         end
 
-        html = "<iframe \
-          class=\"video\" \
-          src=\"#{url}\" \
-          title=\"#{title}\" \
-          width=\"#{width}\" \
-          height=\"#{height}\" \
-          style=\"#{style}\" \
-          allow=\"autoplay; encrypted-media\" \
-          frameborder=\"0\" \
-          allowfullscreen=\"\">\
-          </iframe>"
+        html = "<iframe"\
+          " id=\"#{css_id}\""\
+          " class=\"#{css_class}\""\
+          " src=\"#{url}\""\
+          " title=\"#{title}\""\
+          " width=\"#{width}\""\
+          " height=\"#{height}\""\
+          " style=\"#{style}\""\
+          " allow=\"#{allow}\""\
+          " frameborder=\"#{frameborder}\""\
+          " allowfullscreen>" \
+          "</iframe>"
 
         content = content.gsub(match_data[0], html)
         self.handled = true
