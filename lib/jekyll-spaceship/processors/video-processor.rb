@@ -5,9 +5,21 @@ require 'uri'
 module Jekyll::Spaceship
   class VideoProcessor < Processor
     def on_handle_markdown(content)
+      content = handle_normal_video(content)
       content = handle_youtube(content)
       content = handle_vimeo(content)
       content = handle_dailymotion(content)
+    end
+
+    # Examples:
+    # ![video](//www.html5rocks.com/en/tutorials/video/basics/devstories.webm)
+    # ![video](//techslides.com/demos/sample-videos/small.ogv?allow=autoplay)
+    # ![video](//techslides.com/demos/sample-videos/small.mp4?width=400)
+    def handle_normal_video(content)
+      handle_video(content, {
+        host: '(https?:)?\\/\\/.*\\/',
+        id: '(.+?\\.(avi|mp4|webm|ogg|ogv|flv|mkv|mov|wmv|3gp|rmvb|asf))',
+      })
     end
 
     # Examples:
@@ -29,9 +41,7 @@ module Jekyll::Spaceship
       handle_video(content, {
         host: '(https?:)?\\/\\/vimeo\\.com\\/',
         id: '([0-9]+)',
-        iframe_url: "https://player.vimeo.com/video/",
-        width: "100%",
-        height: 350
+        iframe_url: "https://player.vimeo.com/video/"
       })
     end
 
@@ -80,12 +90,12 @@ module Jekyll::Spaceship
         css_id = qs['id'] || "video-#{id}"
         css_class = qs['class'] || 'video'
         width = qs['width'] || data[:width] || "100%"
-        height = qs['height'] || data[:height] || 400
+        height = qs['height'] || data[:height] || 350
         frameborder = qs['frameborder'] || 0
         style = qs['style'] || ''
-        allow = qs['allow'] || "autoplay; encrypted-media"
+        allow = qs['allow'] || "encrypted-media; picture-in-picture"
 
-        url = URI("#{iframe_url}#{id}").tap do |v|
+        url = URI(iframe_url ? "#{iframe_url}#{id}" : url).tap do |v|
           v.query = URI.encode_www_form(qs) if qs.size > 0
         end
 
