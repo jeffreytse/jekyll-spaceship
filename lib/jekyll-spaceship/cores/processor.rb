@@ -156,13 +156,13 @@ module Jekyll::Spaceship
       @exclusions.each do |type|
         regex = nil
         if type == :code
-          regex = /(`{3}\s*(\w*)((?:.|\n)*?)`{3})/
+          regex = /((`+)\s*(\w*)((?:.|\n)*?)\2)/
         end
         next if regex.nil?
         content.scan(regex) do |match_data|
           match = match_data[0]
           id = @exclusion_store.size
-          content = content.gsub(match, "[//]: JEKYLL_EXCLUDE_##{id}")
+          content = content.sub(match, "[JEKYLL@#{object_id}@#{id}]")
           @exclusion_store.push match
         end
       end
@@ -173,7 +173,7 @@ module Jekyll::Spaceship
       while @exclusion_store.size > 0
         match = @exclusion_store.pop
         id = @exclusion_store.size
-        content = content.gsub("[//]: JEKYLL_EXCLUDE_##{id}", match)
+        content = content.sub("[JEKYLL@#{object_id}@#{id}]", match)
       end
       @exclusion_store = []
       content
