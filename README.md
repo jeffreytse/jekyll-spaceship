@@ -80,10 +80,10 @@
 <br>
 
 
-A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, emoji, youtube, vimeo, dailymotion, etc.
+Spaceship is a minimalistic, powerful and extremely customizable [Jekyll](https://jekyllrb.com/) plugin. It combines everything you may need for convenient work, without unnecessary complications, like a real spaceship.
 
 <p align="center">
-    <img alt="Jekyll Spaceship Demo" src="https://user-images.githubusercontent.com/9413601/82250463-15451780-997e-11ea-8809-f411586d9508.gif" alt="Donate (Ko-fi)" />
+    <img alt="Jekyll Spaceship Demo" src="https://user-images.githubusercontent.com/9413601/82250463-15451780-997e-11ea-8809-f411586d9508.gif" />
 </p>
 
 **💡 Tip:** I hope you enjoy using this plugin. If you like this project, **a little star** for it is your way make a clear statement: **My work is valued**. I would appreciate your support! _Thank you!_
@@ -109,10 +109,12 @@ A Jekyll plugin to provide powerful supports for table, mathjax, plantuml, emoji
     - [4.1 Youtube Usage](#youtube-usage)
     - [4.2 Vimeo Usage](#vimeo-usage)
     - [4.3 DailyMotion Usage](#dailymotion-usage)
+    - [4.4 General Video Usage](#general-video-usage)
   - [5. Hybrid HTML with Markdown](#5-hybrid-html-with-markdown)
   - [6. Markdown Polyfill](#6-markdown-polyfill)
     - [6.1 Escape Ordered List](#escape-ordered-list)
   - [7. Emoji Usage](#7-emoji-usage)
+    - [7.1 Emoji Customizing](#71-emoji-customizing)
 - [Credits](#credits)
 - [Contributing](#contributing)
 - [License](#license)
@@ -576,6 +578,7 @@ While its not possible to embed a video in markdown, the best and easiest way is
 - Youtube
 - Vimeo
 - DailyMotion
+- General Video ( mp4 | avi | webm | ogg | ogv | 3gp | flv | mov ... )
 
 There are two ways to embed a video in your Jekyll blog page:
 
@@ -633,6 +636,21 @@ the link as below:
 ```markdown
 ![](https://dai.ly/x7tgcev?width=100%&height=400)
 ```
+
+#### General Video Usage
+
+```markdown
+![](//www.html5rocks.com/en/tutorials/video/basics/devstories.webm)
+```
+
+```markdown
+![](//techslides.com/demos/sample-videos/small.ogv?allow=autoplay)
+```
+
+```markdown
+![](//techslides.com/demos/sample-videos/small.mp4?width=400)
+```
+
 
 ### 5. Hybrid HTML with Markdown
 
@@ -724,6 +742,19 @@ I give this plugin two :+1:!
 **Code above would be parsed as:**
 
 I give this plugin two :+1:!
+
+#### 7.1 Emoji Customizing
+
+If you'd like to serve emoji images locally, or use a custom emoji source, you can specify so in your `_config.yml` file:
+
+```yml
+jekyll-spaceship:
+  emoji-processor:
+    src: "/assets/images/emoji"
+```
+
+See the [Gemoji](https://github.com/github/gemoji) documentation for generating image files.
+
 
 ## Credits
 
