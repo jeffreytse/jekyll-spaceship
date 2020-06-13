@@ -42,6 +42,7 @@ module Jekyll::Spaceship
       self.initialize_exclusions
       @logger = Logger.new(self.name)
       @config = Config.store(self.filename)
+      @handled_files = {}
     end
 
     def initialize_priority
@@ -56,7 +57,7 @@ module Jekyll::Spaceship
     def initialize_register
       if @@_registers.size.zero?
         self.class.register :pages, :pre_render, :post_render
-        self.class.register :posts, :pre_render, :post_render
+        self.class.register :documents, :pre_render, :post_render
       end
       @registers = Array.new @@_registers
       @@_registers.clear
@@ -140,7 +141,10 @@ module Jekyll::Spaceship
     end
 
     def on_handled
-      file = page.path.gsub(/.*_posts\//, '')
+      source = page.site.source
+      file = page.path.sub(/^#{source}\//, '')
+      return if @handled_files.has_key? file
+      @handled_files[file] = true
       logger.log file
     end
 
