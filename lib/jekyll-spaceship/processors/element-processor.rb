@@ -53,7 +53,9 @@ module Jekyll::Spaceship
           next element.remove_attribute if val.nil?
           if val.kind_of? Array
             next if val.size != 2
-            val = element[prop].sub(/#{val[0]}/, val[1])
+            v = element[prop]
+            v = '' if v.nil?
+            val = v.sub(/#{val[0]}/, val[1])
           elsif val.kind_of? Hash
             result = []
             val.each { |k, v| result.push "#{k}: #{v}" }
@@ -64,7 +66,7 @@ module Jekyll::Spaceship
 
         # processing children
         return unless data.has_key?('children')
-        return element.inner_html = nil if data['children'].nil?
+        return element.inner_html = "" if data['children'].nil?
         children = self.create_children({
           :doc => doc,
           :data => data['children']
