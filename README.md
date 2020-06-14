@@ -115,6 +115,7 @@ Spaceship is a minimalistic, powerful and extremely customizable [Jekyll](https:
     - [6.1 Escape Ordered List](#escape-ordered-list)
   - [7. Emoji Usage](#7-emoji-usage)
     - [7.1 Emoji Customizing](#71-emoji-customizing)
+  - [8. Modifying Element Usage](#8-modifying-element-usage)
 - [Credits](#credits)
 - [Contributing](#contributing)
 - [License](#license)
@@ -154,6 +155,7 @@ jekyll-spaceship:
     - polyfill-processor
     - video-processor
     - emoji-processor
+    - element-processor
   mathjax-processor:
     src:  //cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
     config:
@@ -754,6 +756,51 @@ jekyll-spaceship:
 ```
 
 See the [Gemoji](https://github.com/github/gemoji) documentation for generating image files.
+
+### 8. Modifying Element Usage
+
+It allows us to modify elements via `CSS3 selectors`. Through it you can easily
+modify the attributes of a element tag, replace the child nodes and so on, it's 
+very flexible, but here is example usage for modifying a document:
+
+```yml
+# Here is a comprehensive example
+jekyll-spaceship:
+  element-processor:
+    css:
+      - a: '<h1>Test</h1>'                     # Replace all `a` tags (String Style)
+      - ['a.link1', 'a.link2']:                # Replace all `a.link1`, `a.link2` tags (Hash Style)
+          name: img                            # Replace element tag name
+          props:                               # Replace element properties
+            title: Good image                  # Add a title attribute
+            src: ['(^.*$)', '\0?a=123']        # Add query string to src attribute by regex pattern
+            style:                             # Add style attribute (String Style)
+              color: red
+              font-size: '1.2em'
+          children:                            # Add children to the element
+            -                                  # First empty for adding after the last child node
+            - "<span>Google</span>"            # First child node (String Style)
+            -                                  # Middle empty for wrapping the children nodes
+            - name: span                       # Second child node (Hash Style)
+              props:
+                prop1: "1"                     # Custom property1
+                prop2: "2"                     # Custom property2
+                prop3: "3"                     # Custom property3
+              children:                        # Add nested chidren nodes
+                - "<span>Jekyll</span>"        # First child node (String Style)
+                - name: span                   # Second child node (Hash Style)
+                  props:                       # Modify child node (Hash Style)
+                    prop1: "a"
+                    prop2: "b"
+                    prop3: "c"
+                  children: "<b>Yap!</b>"      # Add children nodes (String Style)
+            -                                  # Last empty for adding before the first child node
+      - a.link: '<a href="//t.com">Link</a>'   # Replace all `a.link` tags (String Style)
+      - h1#title:                              # Replace `h1#title` tags (Hash Style)
+          children: I'm a title!               # Replace inner html to new text
+            
+```
+
 
 
 ## Credits
