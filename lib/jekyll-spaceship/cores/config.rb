@@ -12,7 +12,8 @@ module Jekyll::Spaceship
         'plantuml-processor',
         'polyfill-processor',
         'video-processor',
-        'emoji-processor'
+        'emoji-processor',
+        'element-processor'
       ]
     }
 
