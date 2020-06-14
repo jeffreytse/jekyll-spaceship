@@ -34,7 +34,7 @@ module Jekyll::Spaceship
     def self.store(section, default)
       return if @@store[section].nil?
       return @@store[section] if default.nil?
-      @@store[section] = deep_merge(@@store[section], default)
+      @@store[section] = deep_merge(default, @@store[section])
     end
 
     def self.load(filename = '_config.yml')
