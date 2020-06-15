@@ -760,8 +760,8 @@ See the [Gemoji](https://github.com/github/gemoji) documentation for generating 
 ### 8. Modifying Element Usage
 
 It allows us to modify elements via `CSS3 selectors`. Through it you can easily
-modify the attributes of a element tag, replace the child nodes and so on, it's 
-very flexible, but here is example usage for modifying a document:
+modify the attributes of an element tag, replace the children nodes and so on, 
+it's very flexible, but here is example usage for modifying a document:
 
 ```yml
 # Here is a comprehensive example
@@ -774,7 +774,7 @@ jekyll-spaceship:
           props:                               # Replace element properties
             title: Good image                  # Add a title attribute
             src: ['(^.*$)', '\0?a=123']        # Add query string to src attribute by regex pattern
-            style:                             # Add style attribute (String Style)
+            style:                             # Add style attribute (Hash Style)
               color: red
               font-size: '1.2em'
           children:                            # Add children to the element
@@ -789,18 +789,60 @@ jekyll-spaceship:
               children:                        # Add nested chidren nodes
                 - "<span>Jekyll</span>"        # First child node (String Style)
                 - name: span                   # Second child node (Hash Style)
-                  props:                       # Modify child node (Hash Style)
+                  props:                       # Add attributes to child node (Hash Style)
                     prop1: "a"
                     prop2: "b"
                     prop3: "c"
                   children: "<b>Yap!</b>"      # Add children nodes (String Style)
             -                                  # Last empty for adding before the first child node
       - a.link: '<a href="//t.com">Link</a>'   # Replace all `a.link` tags (String Style)
-      - h1#title:                              # Replace `h1#title` tags (Hash Style)
+      - 'h1#title':                            # Replace `h1#title` tags (Hash Style)
           children: I'm a title!               # Replace inner html to new text
-            
 ```
 
+#### Example 1
+
+Automatically adds a `target="_blank" rel="noopener noreferrer"` attribute to all external links in Jekyll's content.
+
+```yml
+jekyll-spaceship:
+  element-processor:
+    css:
+      - a:                                     # Replce all `a` tags
+          props:
+            class: ['(^.*$)', '\0 ext-link']   # Add `ext-link` to class by regex pattern
+            target: _blank                     # Replace `target` value to `_blank`
+            rel: noopener noreferrer           # Replace `rel` value to `noopener noreferrer`
+```
+
+#### Example 2
+
+Automatically adds `loading="lazy"` to `img` and `iframe` tags to natively load lazily.
+[Browser support](https://caniuse.com/#feat=loading-lazy-attr) is growing. If a browser does not support the `loading` attribute, it will load the resource just like it would normally.
+
+```yml
+jekyll-spaceship:
+  element-processor:
+    css:
+      - a:                                     # Replce all `a` tags
+          props:                               #
+            loading: lazy                      # Replace `lading` value to `lazy`
+```
+
+In case you want to prevent loading some images/iframes lazily, add
+`loading="eager"` to their tags. This might be useful to prevent flickering of
+images during navigation (e.g. the site's logo).
+
+See the following examples to prevent lazy loading.
+
+```yml
+jekyll-spaceship:
+  element-processor:
+    css:
+      - a:                                     # Replce all `a` tags
+          props:                               #
+            loading: eager                     # Replace `loading` value to `eager`
+```
 
 
 ## Credits
@@ -809,6 +851,8 @@ jekyll-spaceship:
 - [MultiMarkdown](https://fletcher.github.io/MultiMarkdown-6) - Lightweight markup processor to produce HTML, LaTeX, and more.
 - [markdown-it-multimd-table](https://github.com/RedBug312/markdown-it-multimd-table) - Multimarkdown table syntax plugin for markdown-it markdown parser.
 - [jmoji](https://github.com/jekyll/jemoji) - GitHub-flavored emoji plugin for Jekyll.
+- [jekyll-target-blank](https://github.com/keithmifsud/jekyll-target-blank) - Automatically opens external links in a new browser for Jekyll Pages, Posts and Docs.
+- [jekyll-loading-lazy](https://github.com/gildesmarais/jekyll-loading-lazy) - Automatically adds loading="lazy" to img and iframe tags to natively load lazily.
 
 ## Contributing
 
