@@ -38,10 +38,10 @@ module Jekyll::Spaceship
       @@store[section] = deep_merge(default, @@store[section])
     end
 
-    def self.load(filename = '_config.yml')
+    def self.load(config = self.site_config)
       config = deep_merge(
         { CONFIG_NAME => DEFAULT_CONFIG },
-        YAML.load_file(File.expand_path(filename))
+        config
       )[CONFIG_NAME]
       @@store = config
       self.use_processors(config)
@@ -51,6 +51,10 @@ module Jekyll::Spaceship
       config['processors'].each do |processor|
         Register.use processor
       end
+    end
+
+    def self.site_config
+      Jekyll.sites.first.config
     end
   end
 end
