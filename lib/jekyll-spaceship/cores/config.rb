@@ -31,7 +31,6 @@ module Jekyll::Spaceship
     end
 
     def self.store(section, default)
-      return if @@store[section].nil?
       return @@store[section] if default.nil?
       @@store[section] = deep_merge(default, @@store[section])
     end
