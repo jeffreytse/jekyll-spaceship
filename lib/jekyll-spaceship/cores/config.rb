@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 module Jekyll::Spaceship
   class Config
     CONFIG_NAME = 'jekyll-spaceship'
