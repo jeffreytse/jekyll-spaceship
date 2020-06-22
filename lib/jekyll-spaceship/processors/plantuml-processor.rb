@@ -17,7 +17,7 @@ module Jekyll::Spaceship
         'css' => {
           'class' => 'plantuml'
         },
-        'src' => 'http://www.plantuml.com/plantuml/png/{hexcode}'
+        'src' => 'http://www.plantuml.com/plantuml/png/'
       }
     end
 
@@ -75,6 +75,10 @@ module Jekyll::Spaceship
 
     def get_url(code)
       src = self.config['src']
+
+      # set default method
+      src += '{hexcode}' if src.match(/\{.*\}/).nil?
+
       # encode to hex string
       if src.include?('{hexcode}')
         code = '~h' + code.unpack("H*").first
@@ -87,9 +91,12 @@ module Jekyll::Spaceship
     def get_plantuml_img_data(url)
       data = ''
       begin
-        data = Net::HTTP.get URI(url)
-        data = Base64.encode64(data)
-        data = "data:image/png;base64, #{data}"
+        res = Net::HTTP.get_response URI(url)
+        raise res.body unless res.is_a?(Net::HTTPSuccess)
+        data = Base64.encode64(res.body)
+        content_type = res.header['Content-Type']
+        raise 'Unknown content type!' if content_type.nil?
+        data = "data:#{content_type};base64, #{data}"
       rescue StandardError => msg
         data = url
         logger.log msg
