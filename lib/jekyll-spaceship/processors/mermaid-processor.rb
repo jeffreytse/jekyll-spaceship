@@ -11,7 +11,7 @@ module Jekyll::Spaceship
       {
         'mode' => 'default',
         'syntax' => {
-          'code' => 'mermaid@render',
+          'code' => 'mermaid!',
           'custom' => ['@startmermaid', '@endmermaid']
         },
         'css' => {

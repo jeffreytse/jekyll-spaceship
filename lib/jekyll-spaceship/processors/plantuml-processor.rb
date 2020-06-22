@@ -11,7 +11,7 @@ module Jekyll::Spaceship
       {
         'mode' => 'default',
         'syntax' => {
-          'code' => 'plantuml@render',
+          'code' => 'plantuml!',
           'custom' => ['@startuml', '@enduml']
         },
         'css' => {
