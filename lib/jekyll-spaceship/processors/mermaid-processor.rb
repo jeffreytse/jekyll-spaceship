@@ -20,7 +20,7 @@ module Jekyll::Spaceship
         'config': {
           'theme' => 'default'
         },
-        'src' => 'https://mermaid.ink/img/'
+        'src' => 'https://mermaid.ink/svg/'
       }
     end
 
@@ -63,14 +63,6 @@ module Jekyll::Spaceship
       # encode to UTF-8
       code = code.encode('UTF-8')
 
-      # wrap code
-      code = {
-        'code' => code.gsub(/^\s*|\s*$/, ''),
-        'mermaid' => config['config']
-      }.to_json
-
-      # encode to base64 string
-      code = Base64.urlsafe_encode64(code, padding: false)
       url = get_url(code)
 
       # render mode
@@ -85,15 +77,35 @@ module Jekyll::Spaceship
     end
 
     def get_url(code)
-      "#{config['src']}#{code}"
+      src = self.config['src']
+
+      # wrap code
+      code = {
+        'code' => code.gsub(/^\s*|\s*$/, ''),
+        'mermaid' => config['config']
+      }.to_json
+
+      # set default method
+      src += '{code}' if src.match(/\{.*\}/).nil?
+
+      # encode to base64 string
+      if src.include?('{code}')
+        code = Base64.urlsafe_encode64(code, padding: false)
+        return src.gsub('{code}', code)
+      else
+        raise "No supported src ! #{src}"
+      end
     end
 
     def get_mermaid_img_data(url)
       data = ''
       begin
-        data = Net::HTTP.get URI(url)
-        data = Base64.encode64(data)
-        data = "data:image/png;base64, #{data}"
+        res = Net::HTTP.get_response URI(url)
+        raise res.body unless res.is_a?(Net::HTTPSuccess)
+        data = Base64.encode64(res.body)
+        content_type = res.header['Content-Type']
+        raise 'Unknown content type!' if content_type.nil?
+        data = "data:#{content_type};base64, #{data}"
       rescue StandardError => msg
         data = url
         logger.log msg
