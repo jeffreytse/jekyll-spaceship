@@ -105,17 +105,18 @@ Spaceship is a minimalistic, powerful and extremely customizable [Jekyll](https:
     - [2.1 Performance Optimization](#21-performance-optimization)
     - [2.2 How to use?](#22-how-to-use)
   - [3. PlantUML Usage](#3-plantuml-usage)
-  - [4. Video Usage](#4-video-usage)
-    - [4.1 Youtube Usage](#youtube-usage)
-    - [4.2 Vimeo Usage](#vimeo-usage)
-    - [4.3 DailyMotion Usage](#dailymotion-usage)
-    - [4.4 General Video Usage](#general-video-usage)
-  - [5. Hybrid HTML with Markdown](#5-hybrid-html-with-markdown)
-  - [6. Markdown Polyfill](#6-markdown-polyfill)
-    - [6.1 Escape Ordered List](#escape-ordered-list)
-  - [7. Emoji Usage](#7-emoji-usage)
-    - [7.1 Emoji Customizing](#71-emoji-customizing)
-  - [8. Modifying Element Usage](#8-modifying-element-usage)
+  - [4. Mermaid Usage](#4-mermaid-usage)
+  - [5. Video Usage](#5-video-usage)
+    - [5.1 Youtube Usage](#youtube-usage)
+    - [5.2 Vimeo Usage](#vimeo-usage)
+    - [5.3 DailyMotion Usage](#dailymotion-usage)
+    - [5.4 General Video Usage](#general-video-usage)
+  - [6. Hybrid HTML with Markdown](#6-hybrid-html-with-markdown)
+  - [7. Markdown Polyfill](#7-markdown-polyfill)
+    - [7.1 Escape Ordered List](#71-escape-ordered-list)
+  - [8. Emoji Usage](#8-emoji-usage)
+    - [8.1 Emoji Customizing](#81-emoji-customizing)
+  - [9. Modifying Element Usage](#9-modifying-element-usage)
 - [Credits](#credits)
 - [Contributing](#contributing)
 - [License](#license)
@@ -148,10 +149,12 @@ This plugin runs with the following configuration options by default. Alternativ
 ```yml
 # Where things are
 jekyll-spaceship:
+  # default enabled processors
   processors:
     - table-processor
     - mathjax-processor
     - plantuml-processor
+    - mermaid-processor
     - polyfill-processor
     - video-processor
     - emoji-processor
@@ -164,8 +167,35 @@ jekyll-spaceship:
           - ['$','$']
           - ['\(','\)']
   plantuml-processor:
+    mode: default  # mode value 'pre-fetch' for fetch image at building stage
+    css:
+      class: plantuml
+    syntax:
+      code: 'plantuml!'
+      custom: ['@startuml', '@enduml']
     src: http://www.plantuml.com/plantuml/png/
+  mermaid-processor:
+    mode: default  # mode value 'pre-fetch' for fetch image at building stage
+    css:
+      class: mermaid
+    syntax:
+      code: 'mermaid!'
+      custom: ['@startmermaid', '@endmermaid']
+    config:
+      theme: default
+    src: https://mermaid.ink/svg/
+  video-processor:
+    default:
+      id: 'video-{id}'
+      class: 'video'
+      width: '100%'
+      height: 350
+      border: 0
+      style: 'max-width: 600px'
+      allow: 'encrypted-media; picture-in-picture'
   emoji-processor:
+    css:
+      class: emoji
     src: https://github.githubassets.com/images/icons/emoji/
 ```
 
@@ -546,13 +576,13 @@ Code above would be parsed as:
 - class diagram,
 - activity diagram,
 - component diagram,
-- state diagram
+- state diagram,
 - object diagram
 
 There are two ways to create a diagram in your Jekyll blog page:
 
-````markdown
-```plantuml
+````
+```plantuml!
 Bob -> Alice : hello world
 ```
 ````
@@ -569,7 +599,48 @@ Code above would be parsed as:
 
 ![PlantUML Diagram](https://user-images.githubusercontent.com/9413601/82813883-9180b300-9ec8-11ea-8778-f450e0056938.png)
 
-### 4. Video Usage
+### 4. Mermaid Usage
+
+[Mermaid](https://mermaid-js.github.io/) is a Javascript based diagramming and charting tool. It generates diagrams flowcharts and more, using markdown-inspired text for ease and speed.
+
+It allows to quickly write:
+
+- flow chart,
+- pie chart,
+- sequence diagram,
+- class diagram,
+- state diagram,
+- entity relationship diagram,
+- user journey,
+- gantt
+
+There are two ways to create a diagram in your Jekyll blog page:
+
+````
+```mermaid!
+pie title Pets adopted by volunteers
+  "Dogs" : 386
+  "Cats" : 85
+  "Rats" : 35
+```
+````
+
+or
+
+```markdown
+@startmermaid
+pie title Pets adopted by volunteers
+  "Dogs" : 386
+  "Cats" : 85
+  "Rats" : 35
+@endmermaid
+```
+
+Code above would be parsed as:
+
+![Mermaid Diagram](https://user-images.githubusercontent.com/9413601/85282355-2e317300-b4be-11ea-9c30-8f9d61540d14.png)
+
+### 5. Video Usage
 
 How often did you find yourself googling "**How to embed a video in markdown?**"
 
@@ -603,9 +674,7 @@ the link as below:
 
 ```markdown
 ![](https://www.youtube.com/watch?v=Ptk_1Dc2iPY?width=800&height=500)
-```
 
-```markdown
 ![](https://www.dailymotion.com/video/x7tfyq3?width=100%&height=400&autoplay=1)
 ```
 
@@ -613,9 +682,7 @@ the link as below:
 
 ```markdown
 ![](https://www.youtube.com/watch?v=Ptk_1Dc2iPY)
-```
 
-```markdown
 ![](//www.youtube.com/watch?v=Ptk_1Dc2iPY?width=800&height=500)
 ```
 
@@ -623,9 +690,7 @@ the link as below:
 
 ```markdown
 ![](https://vimeo.com/263856289)
-```
 
-```markdown
 ![](https://vimeo.com/263856289?width=500&height=320)
 ```
 
@@ -633,9 +698,7 @@ the link as below:
 
 ```markdown
 ![](https://www.dailymotion.com/video/x7tfyq3)
-```
 
-```markdown
 ![](https://dai.ly/x7tgcev?width=100%&height=400)
 ```
 
@@ -643,18 +706,14 @@ the link as below:
 
 ```markdown
 ![](//www.html5rocks.com/en/tutorials/video/basics/devstories.webm)
-```
 
-```markdown
 ![](//techslides.com/demos/sample-videos/small.ogv?allow=autoplay)
-```
 
-```markdown
 ![](//techslides.com/demos/sample-videos/small.mp4?width=400)
 ```
 
 
-### 5. Hybrid HTML with Markdown
+### 6. Hybrid HTML with Markdown
 
 As markdown is not only a lightweight markup language with plain-text-formatting syntax, but also an easy-to-read and easy-to-write plain text format, so writing a hybrid HTML with markdown is an awesome choice.
 
@@ -688,7 +747,7 @@ Bob -> Alice : hello
 </script>
 ```
 
-### 6. Markdown Polyfill
+### 7. Markdown Polyfill
 
 It allows us to polyfill features for extending markdown syntax.
 
@@ -696,7 +755,7 @@ It allows us to polyfill features for extending markdown syntax.
 
 - Escape ordered list
 
-#### Escape Ordered List
+#### 7.1 Escape Ordered List
 
 A backslash at begin to escape the ordered list.
 
@@ -730,7 +789,7 @@ Escaped:
 10. List item Cafe.
 ```
 
-### 7. Emoji Usage
+### 8. Emoji Usage
 GitHub-flavored emoji images and names would allow emojifying content such as: it's raining :cat:s and :dog:s!
 
 Noted that emoji images are served from the GitHub.com CDN, with a base URL of [https://github.githubassets.com](https://github.githubassets.com), which results in emoji image URLs like [https://github.githubassets.com/images/icons/emoji/unicode/1f604.png](https://github.githubassets.com/images/icons/emoji/unicode/1f604.png).
@@ -745,7 +804,7 @@ I give this plugin two :+1:!
 
 I give this plugin two :+1:!
 
-#### 7.1 Emoji Customizing
+#### 8.1 Emoji Customizing
 
 If you'd like to serve emoji images locally, or use a custom emoji source, you can specify so in your `_config.yml` file:
 
@@ -757,7 +816,7 @@ jekyll-spaceship:
 
 See the [Gemoji](https://github.com/github/gemoji) documentation for generating image files.
 
-### 8. Modifying Element Usage
+### 9. Modifying Element Usage
 
 It allows us to modify elements via `CSS3 selectors`. Through it you can easily
 modify the attributes of an element tag, replace the children nodes and so on, 
@@ -853,6 +912,7 @@ jekyll-spaceship:
 - [jmoji](https://github.com/jekyll/jemoji) - GitHub-flavored emoji plugin for Jekyll.
 - [jekyll-target-blank](https://github.com/keithmifsud/jekyll-target-blank) - Automatically opens external links in a new browser for Jekyll Pages, Posts and Docs.
 - [jekyll-loading-lazy](https://github.com/gildesmarais/jekyll-loading-lazy) - Automatically adds loading="lazy" to img and iframe tags to natively load lazily.
+- [mermaid](https://github.com/mermaid-js/mermaid) - Generation of diagram and flowchart from text in a similar manner as markdown.
 
 ## Contributing
 
