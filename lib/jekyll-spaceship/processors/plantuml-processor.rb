@@ -7,23 +7,37 @@ module Jekyll::Spaceship
   class PlantumlProcessor < Processor
     exclude :none
 
-    PLANTUML_PATTERNS = [
-      /(\\?(@startuml)((?:.|\n)*?)@enduml)/,
-      /((`{3,})\s*plantuml((?:.|\n)*?)\2)/
-    ]
-
     def self.config
-      { 'src' => 'http://www.plantuml.com/plantuml/png/' }
+      {
+        'mode' => 'default',
+        'syntax' => {
+          'code' => 'plantuml@render',
+          'custom' => ['@startuml', '@enduml']
+        },
+        'css' => {
+          'class' => 'plantuml'
+        },
+        'src' => 'http://www.plantuml.com/plantuml/png/{hexcode}'
+      }
     end
 
     def on_handle_markdown(content)
-      # match default plantuml block and code block
-      PLANTUML_PATTERNS.each do |pattern|
+      # match custom plantuml block and code block
+      syntax = self.config['syntax']
+      code_name = syntax['code']
+      custom = syntax['custom'][-2, 2]
+
+      patterns = [
+        /((`{3,})\s*#{code_name}((?:.|\n)*?)\2)/,
+        /((?<!\\)(#{custom[0]})((?:.|\n)*?)(?<!\\)(#{custom[1]}))/
+      ]
+
+      patterns.each do |pattern|
         content = handle_plantuml_block(pattern, content)
       end
 
-      # handle escape default plantuml block
-      content.gsub(/\\(@startuml|@enduml)/, '\1')
+      # handle escape custom plantuml block
+      content.gsub(/\\(#{custom[0]}|#{custom[1]})/, '\1')
     end
 
     def handle_plantuml_block(pattern, content)
@@ -31,11 +45,6 @@ module Jekyll::Spaceship
         match = match.select { |m| not m.nil? }
         block = match[0]
         code = match[2]
-
-        # skip escape default plantuml block
-        if block.match(/(^\\@startuml|\\@enduml$)/)
-          next
-        end
 
         self.handled = true
 
@@ -51,17 +60,32 @@ module Jekyll::Spaceship
       # wrap plantuml code
       code = "@startuml#{code}@enduml".encode('UTF-8')
 
-      # encode to hex string
-      code = '~h' + code.unpack("H*").first
-      data = self.get_plantuml_img_data(code)
+      url = get_url(code)
+
+      # render mode
+      case self.config['mode']
+      when 'pre-fetch'
+        url = self.get_plantuml_img_data(url)
+      end
 
       # return img tag
-      "<img class=\"plantuml\" src=\"#{data}\">"
+      css_class = self.config['css']['class']
+      "<img class=\"#{css_class}\" src=\"#{url}\">"
     end
 
-    def get_plantuml_img_data(code)
+    def get_url(code)
+      src = self.config['src']
+      # encode to hex string
+      if src.include?('{hexcode}')
+        code = '~h' + code.unpack("H*").first
+        return src.gsub('{hexcode}', code)
+      else
+        raise "No supported src ! #{src}"
+      end
+    end
+
+    def get_plantuml_img_data(url)
       data = ''
-      url = "#{config['src']}#{code}"
       begin
         data = Net::HTTP.get URI(url)
         data = Base64.encode64(data)
