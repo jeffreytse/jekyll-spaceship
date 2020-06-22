@@ -8,6 +8,7 @@ module Jekyll::Spaceship
         'table-processor',
         'mathjax-processor',
         'plantuml-processor',
+        'mermaid-processor',
         'polyfill-processor',
         'video-processor',
         'emoji-processor',
