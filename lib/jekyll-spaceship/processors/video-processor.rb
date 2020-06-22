@@ -4,6 +4,20 @@ require 'uri'
 
 module Jekyll::Spaceship
   class VideoProcessor < Processor
+    def self.config
+      {
+        'default' => {
+          'id' => 'video-{id}',
+          'class' => 'video',
+          'width' => '100%',
+          'height' => 350,
+          'border' => 0,
+          'style' => 'max-width: 600px',
+          'allow' => 'encrypted-media; picture-in-picture',
+        }
+      }
+    end
+
     def on_handle_markdown(content)
       content = handle_normal_video(content)
       content = handle_youtube(content)
@@ -87,13 +101,17 @@ module Jekyll::Spaceship
           next true if v == id or v == ''
         end
 
-        css_id = qs['id'] || "video-#{id}"
-        css_class = qs['class'] || 'video'
-        width = qs['width'] || data[:width] || "100%"
-        height = qs['height'] || data[:height] || 350
-        frameborder = qs['frameborder'] || 0
-        style = qs['style'] || 'max-width: 600px'
-        allow = qs['allow'] || "encrypted-media; picture-in-picture"
+        default = self.config['default']
+        css_id = qs['id'] || default['id']
+        css_class = qs['class'] || default['class']
+        width = qs['width'] || data[:width] || default['width']
+        height = qs['height'] || data[:height] || default['height']
+        frameborder = qs['frameborder'] || default['border']
+        style = qs['style'] || default['style']
+        allow = qs['allow'] || default['allow']
+
+        css_id.gsub('{id}', id)
+        css_class.gsub('{id}', id)
 
         url = URI(iframe_url ? "#{iframe_url}#{id}" : url).tap do |v|
           v.query = URI.encode_www_form(qs) if qs.size > 0
