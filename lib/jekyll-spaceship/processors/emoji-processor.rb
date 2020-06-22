@@ -7,7 +7,12 @@ require 'gemoji'
 module Jekyll::Spaceship
   class EmojiProcessor < Processor
     def self.config
-      { 'src' => 'https://github.githubassets.com/images/icons/emoji/' }
+      {
+        'css' => {
+          'class' => 'emoji'
+        },
+        'src' => 'https://github.githubassets.com/images/icons/emoji/'
+      }
     end
 
     def on_handle_html(content)
@@ -22,7 +27,7 @@ module Jekyll::Spaceship
 
         content = content.gsub(
           /(?<!\=")\s*:#{emoji_name}:\s*(?!"\s)/,
-          "<img class=\"emoji\""\
+          "<img class=\"\""\
             " title=\":#{emoji.name}:\""\
             " alt=\":#{emoji.name}:\""\
             " raw=\"#{emoji.raw}\""\
