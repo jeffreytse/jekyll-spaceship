@@ -8,5 +8,5 @@ require 'jekyll-spaceship/cores/register'
 
 module Jekyll::Spaceship
   Logger.display_info
-  Config.load
+  Config.load_config
 end

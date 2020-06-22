@@ -35,7 +35,7 @@ module Jekyll::Spaceship
       @@store[section] = deep_merge(default, @@store[section])
     end
 
-    def self.load(config = self.site_config)
+    def self.load(config = {})
       config = deep_merge(
         { CONFIG_NAME => DEFAULT_CONFIG },
         config
@@ -50,8 +50,11 @@ module Jekyll::Spaceship
       end
     end
 
-    def self.site_config
-      Jekyll.sites.first.config
+    def self.load_config
+      # post load site config for `group :jekyll_plugin`
+      Jekyll::Hooks.register :site, :after_init do |site|
+        self.load(site.config)
+      end
     end
   end
 end
