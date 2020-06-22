@@ -167,7 +167,7 @@ jekyll-spaceship:
           - ['$','$']
           - ['\(','\)']
   plantuml-processor:
-    mode: default  # mode value 'pre-fetch' for fetch image at building stage
+    mode: default  # mode value 'pre-fetch' for fetching image at building stage
     css:
       class: plantuml
     syntax:
@@ -175,7 +175,7 @@ jekyll-spaceship:
       custom: ['@startuml', '@enduml']
     src: http://www.plantuml.com/plantuml/png/
   mermaid-processor:
-    mode: default  # mode value 'pre-fetch' for fetch image at building stage
+    mode: default  # mode value 'pre-fetch' for fetching image at building stage
     css:
       class: mermaid
     syntax:
@@ -902,6 +902,12 @@ jekyll-spaceship:
           props:                               #
             loading: eager                     # Replace `loading` value to `eager`
 ```
+
+There are three options when using this method to lazy load images. Here are the supported values for the loading attribute:
+
+- auto: Default lazy-loading behavior of the browser, which is the same as not including the attribute.
+- lazy: Defer loading of the resource until it reaches a calculated distance from the viewport.
+- eager: Load the resource immediately, regardless of where it’s located on the page.
 
 
 ## Credits
