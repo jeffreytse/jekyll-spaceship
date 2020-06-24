@@ -110,8 +110,8 @@ module Jekyll::Spaceship
         style = qs['style'] || default['style']
         allow = qs['allow'] || default['allow']
 
-        css_id.gsub('{id}', id)
-        css_class.gsub('{id}', id)
+        css_id = css_id.gsub('{id}', id)
+        css_class = css_class.gsub('{id}', id)
 
         url = URI(iframe_url ? "#{iframe_url}#{id}" : url).tap do |v|
           v.query = URI.encode_www_form(qs) if qs.size > 0
