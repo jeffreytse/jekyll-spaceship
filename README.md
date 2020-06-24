@@ -221,13 +221,13 @@ This feature is contributed by [pmccloghrylaing](https://github.com/pmccloghryla
 ```markdown
 |              Stage | Direct Products | ATP Yields |
 | -----------------: | --------------: | ---------: |
-|         Glycolysis |           2 ATP |            |
-|                 ^^ |          2 NADH |   3--5 ATP |
+|         Glycolysis |          2 ATP              ||
+| ^^                 |          2 NADH |   3--5 ATP |
 | Pyruvaye oxidation |          2 NADH |      5 ATP |
 |  Citric acid cycle |          2 ATP              ||
-|                 ^^ |          6 NADH |     15 ATP |
-|                 ^^ |          2 FADH |      3 ATP |
-|                                   30--32 ATP    |||
+| ^^                 |          6 NADH |     15 ATP |
+| ^^                 |          2 FADH |      3 ATP |
+|                               30--32 ATP        |||
 ```
 
 Code above would be parsed as:
@@ -428,7 +428,7 @@ Table cell can be set alignment separately.
 ```markdown
 | :        Fruits \|\| Food       : |||
 | :--------- | :-------- | :--------  |
-| Apple      | :  Apple :| Apple      \
+| Apple      | : Apple : | Apple      \
 | Banana     |   Banana  | Banana     \
 | Orange     |   Orange  | Orange     |
 | :   Rowspan is 4    : || How's it?  |
@@ -727,7 +727,7 @@ It's easy to write markdown inside HTML:
 
 | :        Fruits \|\| Food       : |||
 | :--------- | :-------- | :--------  |
-| Apple      | :  Apple :| Apple      \
+| Apple      | : Apple : | Apple      \
 | Banana     |   Banana  | Banana     \
 | Orange     |   Orange  | Orange     |
 | :   Rowspan is 4    : || How's it?  |
