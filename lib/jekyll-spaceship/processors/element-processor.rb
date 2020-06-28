@@ -45,61 +45,11 @@ module Jekyll::Spaceship
       if data.kind_of? String
         element.replace Nokogiri::HTML.fragment(data)
       elsif data.kind_of? Hash
-        # set name
-        element.name = data['name'] unless data['name'].nil?
-
-        # set props
-        data['props']&.each do |prop, val|
-          next element.remove_attribute if val.nil?
-          if val.kind_of? Array
-            next if val.size != 2
-            v = element[prop]
-            v = '' if v.nil?
-            val = v.sub(/#{val[0]}/, val[1])
-          elsif val.kind_of? Hash
-            result = []
-            val.each { |k, v| result.push "#{k}: #{v}" }
-            val = result.join(";")
-          end
-          element.set_attribute(prop, val)
-        end
-
-        # processing children
-        return unless data.has_key?('children')
-        return element.inner_html = "" if data['children'].nil?
-        children = self.create_children({
+        handle_hash_element({
           :doc => doc,
-          :data => data['children']
+          :element => element,
+          :data => data,
         })
-
-        # replace whole inner html
-        unless data['children'].kind_of? Array
-          return element.inner_html = children
-        end
-
-        if element.children.size.zero?
-          return element.inner_html = children
-        end
-
-        index = data['children'].index(nil)
-        if index.nil?
-          return element.inner_html = children
-        end
-
-        # insert to the end of children
-        if index == 0
-          return element.children.last.after(children)
-        end
-
-        # insert to the begin of children
-        rindex = data['children'].rindex { |item| !item.nil? }
-        if index == rindex + 1
-          return element.children.first.before children
-        end
-
-        # wrap the children
-        element.children.first.before children[0..index]
-        element.children.last.after children[index..children.size]
       end
     end
 
@@ -126,6 +76,45 @@ module Jekyll::Spaceship
       root.children
     end
 
+    def handle_hash_element(data)
+      doc = data[:doc]
+      element = data[:element]
+      data = data[:data]
+
+      # set name
+      element.name = data['name'] unless data['name'].nil?
+
+      # set props
+      data['props']&.each do |prop, val|
+        next element.remove_attribute if val.nil?
+        if val.kind_of? Array
+          next if val.size != 2
+          v = element[prop]
+          v = '' if v.nil?
+          val = v.sub(/#{val[0]}/, val[1])
+        elsif val.kind_of? Hash
+          result = []
+          val.each { |k, v| result.push "#{k}: #{v}" }
+          val = result.join(";")
+        end
+        element.set_attribute(prop, val)
+      end
+
+      # processing children
+      return unless data.has_key?('children')
+      return element.inner_html = "" if data['children'].nil?
+      children = self.create_children({
+        :doc => doc,
+        :data => data['children']
+      })
+
+      handle_element_placement({
+        :data => data,
+        :element => element,
+        :children => children,
+      })
+    end
+
     def create_element(data)
       doc = data[:doc]
       data = data[:data]
@@ -147,6 +136,35 @@ module Jekyll::Spaceship
         node.set_attribute(prop, val)
       end
       node
+    end
+
+    def handle_element_placement(data)
+      element = data[:element]
+      children = data[:children]
+      data = data[:data]
+
+      # replace whole inner html
+      unless data['children'].kind_of? Array
+        return element.inner_html = children
+      end
+
+      if element.children.size.zero?
+        return element.inner_html = children
+      end
+
+      index = data['children'].index(nil)
+      rindex = data['children'].rindex { |item| !item.nil? }
+
+      if index.nil?
+        element.inner_html = children
+      elsif index == 0 # insert to the end of children
+        element.children.last.after(children)
+      elsif index == rindex + 1 # insert to the begin of children
+          element.children.first.before children
+      else # wrap the children
+        element.children.first.before children[0..index]
+        element.children.last.after children[index..children.size]
+      end
     end
   end
 end
