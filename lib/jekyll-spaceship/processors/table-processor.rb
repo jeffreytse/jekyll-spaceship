@@ -14,9 +14,9 @@ module Jekyll::Spaceship
         references[ref_name] = ref_value
       end
       if references.size > 0
-        content.scan(/.*(?<!\\)\|.*/) do |result|
+        content.scan(/[^\n]*(?<!\\)\|[^\n]*/) do |result|
           references.each do |key, val|
-            replace = result.gsub(/\[(.*)\]\s*\[#{key}\]/, "[\1](#{val})")
+            replace = result.gsub(/\[([^\n]*)\]\s*\[#{key}\]/, "[\1](#{val})")
             next if result == replace
             content = content.gsub(result, replace)
           end
@@ -24,15 +24,15 @@ module Jekyll::Spaceship
       end
 
       # pre-handle row-span
-      content = content.gsub(/(?<!\\)(\|.*\\\s*)\|\s*\n/, "\\1\n")
+      content = content.gsub(/(?<!\\)(\|[^\n]*\\\s*)\|\s*\n/, "\\1\n")
 
       # escape | and :
       content = content.gsub(/\|(?=\|)/, '\\|')
-        .gsub(/\\:(?=.*?(?<!\\)\|)/, '\\\\\\\\:')
-        .gsub(/((?<!\\)\|.*?)(\\:)/, '\1\\\\\\\\:')
+        .gsub(/\\:(?=[^\n]*?(?<!\\)\|)/, '\\\\\\\\:')
+        .gsub(/((?<!\\)\|[^\n]*?)(\\:)/, '\1\\\\\\\\:')
 
       # escape * and _ and $ etc.
-      content.scan(/.*(?<!\\)\|.*/) do |result|
+      content.scan(/[^\n]*(?<!\\)\|[^\n]*/) do |result|
         replace = result.gsub(
           /(?<!(?<!\\)\\)(\*|\$|\[|\(|\"|_)/,
           '\\\\\\\\\1')
