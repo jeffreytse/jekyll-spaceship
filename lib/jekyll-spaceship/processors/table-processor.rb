@@ -50,6 +50,7 @@ module Jekyll::Spaceship
 
       # handle each table
       doc.css('table').each do |table|
+        next if table.ancestors('code, pre').size > 0
         rows = table.css('tr')
         data.table = table
         data.rows = rows
