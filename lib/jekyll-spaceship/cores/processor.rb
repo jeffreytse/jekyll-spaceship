@@ -65,7 +65,7 @@ module Jekyll::Spaceship
 
     def initialize_exclusions
       if @@_exclusions.size.zero?
-        self.class.exclude :code, :block_quotes
+        self.class.exclude :code, :math
       end
       @exclusions = @@_exclusions.uniq
       @@_exclusions.clear
@@ -157,6 +157,8 @@ module Jekyll::Spaceship
         regex = nil
         if type == :code
           regex = /((`+)\s*(\w*)((?:.|\n)*?)\2)/
+        elsif type == :math
+          regex = /(?<=^|\n)[^\n\|]*(((?<!\\)\${1,2})[^\n]*\2)[^\n\|]*/
         end
         next if regex.nil?
         content.scan(regex) do |match_data|
