@@ -8,7 +8,7 @@ module Jekyll::Spaceship
     def on_handle_markdown(content)
       # pre-handle reference-style links
       references = {}
-      content.scan(/(\[(.*)\]:\s*(.*))/) do |match_data|
+      content.scan(/\n\s*(\[(.*)\]:\s*(\S+(\s+".*?")?))/) do |match_data|
         ref_name = match_data[1]
         ref_value = match_data[2]
         references[ref_name] = ref_value
@@ -33,9 +33,12 @@ module Jekyll::Spaceship
 
       # escape * and _ and $ etc.
       content.scan(/[^\n]*(?<!\\)\|[^\n]*/) do |result|
+        # skip for math expression within pipeline
+        next unless result
+          .gsub(/((?<!\\)\${1,2})[^\n]*?\1/, '')
+          .match(/(?<!\\)\|/)
         replace = result.gsub(
-          /(?<!(?<!\\)\\)(\*|\$|\[|\(|\"|_)/,
-          '\\\\\\\\\1')
+          /(?<!(?<!\\)\\)(\*|\$|\[|\(|\"|_)/, '\\\\\\\\\1')
         next if result == replace
         content = content.gsub(result, replace)
       end

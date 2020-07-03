@@ -158,7 +158,7 @@ module Jekyll::Spaceship
         if type == :code
           regex = /((`+)\s*(\w*)((?:.|\n)*?)\2)/
         elsif type == :math
-          regex = /(?<=^|\n)[^\n\|]*(((?<!\\)\${1,2})[^\n]*\2)[^\n\|]*/
+          regex = /(((?<!\\)\${1,2})[^\n]*?\1)/
         end
         next if regex.nil?
         content.scan(regex) do |match_data|
