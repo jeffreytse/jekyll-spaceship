@@ -24,15 +24,16 @@ module Jekyll::Spaceship
 
         # escape plus sign
         emoji_name = emoji.name.gsub('+', '\\\+')
+        css_class = self.config['css']['class']
 
         content = content.gsub(
           /(?<!\=")\s*:#{emoji_name}:\s*(?!"\s)/,
-          "<img class=\"\""\
+          "<img class=\"#{css_class}\""\
             " title=\":#{emoji.name}:\""\
             " alt=\":#{emoji.name}:\""\
             " raw=\"#{emoji.raw}\""\
             " src=\"#{config['src']}#{emoji.image_filename}\""\
-            " style=\"vertical-align: middle;"\
+            " style=\"vertical-align: middle; display: inline;"\
             " max-width: 1em; visibility: hidden;\""\
             " onload=\"this.style.visibility='visible'\""\
             " onerror=\"this.replaceWith(this.getAttribute('raw'))\">"\
