@@ -243,7 +243,11 @@ module Jekyll::Spaceship
         .gsub(/(?<!\\)\|/, '\\|')
         .gsub(/^\s+|\s+$/, '')
       content = cvter.convert(content)
-      cell.inner_html = Nokogiri::HTML.fragment(content)
+      content = Nokogiri::HTML.fragment(content)
+      if content.children.first&.name == 'p'
+        content = content.children
+      end
+      cell.inner_html = content.inner_html
     end
   end
 end
