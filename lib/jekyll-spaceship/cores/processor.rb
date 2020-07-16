@@ -65,7 +65,7 @@ module Jekyll::Spaceship
 
     def initialize_exclusions
       if @@_exclusions.size.zero?
-        self.class.exclude :code, :math
+        self.class.exclude :code, :math, :liquid_filter
       end
       @exclusions = @@_exclusions.uniq
       @@_exclusions.clear
@@ -156,15 +156,17 @@ module Jekyll::Spaceship
       @exclusions.each do |type|
         regex = nil
         if type == :code
-          regex = /((`+)\s*(\w*)((?:.|\n)*?)\2)/
+          regex = /(((?<!\\)`+)\s*(\w*)((?:.|\n)*?)\2)/
         elsif type == :math
           regex = /(((?<!\\)\${1,2})[^\n]*?\1)/
+        elsif type == :liquid_filter
+          regex = /((?<!\\)\{\{[^\n]*?\}\})/
         end
         next if regex.nil?
         content.scan(regex) do |match_data|
           match = match_data[0]
           id = @exclusion_store.size
-          content = content.sub(match, "[JEKYLL@#{object_id}@#{id}]")
+          content = content.sub(match, "<!JEKYLL@#{object_id}@#{id}>")
           @exclusion_store.push match
         end
       end
@@ -175,7 +177,7 @@ module Jekyll::Spaceship
       while @exclusion_store.size > 0
         match = @exclusion_store.pop
         id = @exclusion_store.size
-        content = content.sub("[JEKYLL@#{object_id}@#{id}]", match)
+        content = content.sub("<!JEKYLL@#{object_id}@#{id}>", match)
       end
       @exclusion_store = []
       content
