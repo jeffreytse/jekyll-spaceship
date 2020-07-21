@@ -121,7 +121,7 @@ module Jekyll::Spaceship
       else
         if Type.html? output_ext
           method = 'on_handle_html'
-        elsif css? output_ext
+        elsif Type.css? output_ext
           method = 'on_handle_css'
         end
         if self.respond_to? method
