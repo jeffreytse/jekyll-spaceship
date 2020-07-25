@@ -571,17 +571,17 @@ Here are some examples for span IALs:
 Here is an example for custom table cell with IAL:
 
 ```markdown
-{:color-style: style="background: black;" }
-{:color-style: style="color: white;" }
-{:font-style: style="font-weight: 800;" }
+{:color-style: style="background: black;"}
+{:color-style: style="color: white;"}
+{:text-style: style="font-weight: 800; text-decoration: underline;"}
 
 |:             Here's an Inline Attribute Lists example                :||||
-| ------- | ------------------------- | -------------------- | ----------- |
+| ------- | ------------------ | -------------------- | ------------------ |
 |:       :|:  <div style="color: red;"> &lt; Normal HTML Block > </div> :|||
 | ^^      |   Red    {: .cls style="background: orange" }                |||
 | ^^ IALs |   Green  {: #id style="background: green; color: white" }    |||
 | ^^      |   Blue   {: style="background: blue; color: white" }         |||
-| ^^      |   Black  {: color-style font-weight}                         |||
+| ^^      |   Black  {: color-style text-style }                         |||
 ```
 
 Code above would be parsed as:
