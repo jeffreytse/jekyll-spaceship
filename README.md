@@ -101,6 +101,7 @@ Spaceship is a minimalistic, powerful and extremely customizable [Jekyll](https:
     - [1.3 Headerless](#headerless)
     - [1.4 Cell Alignment](#cell-alignment)
     - [1.5 Cell Markdown](#cell-markdown)
+    - [1.6 Cell Inline Attributes](#cell-inline-attributes)
   - [2. MathJax Usage](#2-mathjax-usage)
     - [2.1 Performance Optimization](#21-performance-optimization)
     - [2.2 How to use?](#22-how-to-use)
@@ -533,6 +534,61 @@ Rowspan is 4
 </tr>
 </tbody>
 </table>
+
+#### Cell Inline Attributes
+
+This feature is very useful for custom cell such as using inline style. (e.g., background, color, font)  
+The idea and syntax comes from the [Maruku](http://maruku.rubyforge.org/) package.  
+
+[](https://kramdown.gettalong.org/syntax.html#block-ials)
+
+Following are some examples of attributes definitions (ALDs) and afterwards comes the syntax explanation:
+
+```markdown
+{:ref-name: #id .cls1 .cls2}
+{:second: ref-name #id-of-other title="hallo you"}
+{:other: ref-name second}
+```
+
+An ALD line has the following structure:
+
+- a left brace, optionally preceded by up to three spaces,
+- followed by a colon, the id and another colon,
+- followed by attribute definitions (allowed characters are backslash-escaped closing braces or any character except a not escaped closing brace),
+- followed by a closing brace and optional spaces until the end of the line.
+
+If there is more than one ALD with the same reference name, the attribute definitions of all the ALDs are processed like they are defined in one ALD.
+
+An inline attribute list (IAL) is used to attach attributes to another element.  
+Here are some examples for span IALs:
+
+```markdown
+{: #id .cls1 .cls2} <!-- #id <=> id="id", .cls1 .cls2 <=> class="cls1 cls2" -->
+{: ref-name title="hallo you"}
+{: ref-name class='.cls3' .cls4}
+```
+
+Here is an example for custom table cell with IAL:
+
+```markdown
+{:color-style: style="background: black;" }
+{:color-style: style="color: white;" }
+{:font-style: style="font-weight: 800;" }
+
+|:             Here's an Inline Attribute Lists example                :||||
+| ------- | ------------------------- | -------------------- | ----------- |
+|:       :|:  <div style="color: red;"> &lt; Normal HTML Block > </div> :|||
+| ^^      |   Red    {: .cls style="background: orange" }                |||
+| ^^ IALs |   Green  {: #id style="background: green; color: white" }    |||
+| ^^      |   Blue   {: style="background: blue; color: white" }         |||
+| ^^      |   Black  {: color-style font-weight}                         |||
+```
+
+Code above would be parsed as:
+
+<img width="580px" src="https://user-images.githubusercontent.com/9413601/88461592-738afb00-ced7-11ea-9aac-3179023742b0.png" alt="IALs">
+
+Additionally, [here](https://kramdown.gettalong.org/syntax.html#block-ials) you can learn more details about IALs.
 
 ### 2. MathJax Usage
 
