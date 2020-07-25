@@ -161,7 +161,7 @@ module Jekyll::Spaceship
       if scope.table.multi_row_cells != cells and scope.table.multi_row_start
         for i in 0...scope.table.multi_row_cells.count do
           multi_row_cell = scope.table.multi_row_cells[i]
-          multi_row_cell.inner_html += "<br>#{cells[i].inner_html}"
+          multi_row_cell.inner_html += "\n<br>\n#{cells[i].inner_html}"
         end
         row.remove
       end
@@ -186,7 +186,7 @@ module Jekyll::Spaceship
       span_cell = scope.table.span_row_cells[scope.row.col_index]
       if span_cell and cell.content.match(/^\s*\^{2}/)
         cell.content = cell.content.gsub(/^\s*\^{2}/, '')
-        span_cell.inner_html += "<br>#{cell.inner_html}"
+        span_cell.inner_html += "\n<br>\n#{cell.inner_html}"
         rowspan = span_cell.get_attribute('rowspan') || 1
         rowspan = rowspan.to_i + 1
         span_cell.set_attribute('rowspan', "#{rowspan}")
@@ -242,6 +242,8 @@ module Jekyll::Spaceship
       content = cell.inner_html
         .gsub(/(?<!\\)\|/, '\\|')
         .gsub(/^\s+|\s+$/, '')
+        .gsub(/&lt;/, '<')
+        .gsub(/&gt;/, '>')
       content = cvter.convert(content)
       content = Nokogiri::HTML.fragment(content)
       if content.children.first&.name == 'p'
