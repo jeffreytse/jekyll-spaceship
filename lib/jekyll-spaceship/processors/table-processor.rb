@@ -5,6 +5,9 @@ require "nokogiri"
 
 module Jekyll::Spaceship
   class TableProcessor < Processor
+    ATTR_LIST_PATTERN = /((?<!\\)\{:(?:([A-Za-z]\S*):)?(.*?)(?<!\\)\})/
+    ATTR_LIST_REFS = {}
+
     def on_handle_markdown(content)
       # pre-handle reference-style links
       references = {}
@@ -42,6 +45,19 @@ module Jekyll::Spaceship
         next if result == replace
         content = content.gsub(result, replace)
       end
+
+      # pre-handle attribute list (AL)
+      ATTR_LIST_REFS.clear()
+      content.scan(ATTR_LIST_PATTERN) do |result|
+        ref = result[1]
+        list = result[2]
+        next if ref.nil?
+        if ATTR_LIST_REFS.has_key? ref
+          ATTR_LIST_REFS[ref] += list
+        else
+          ATTR_LIST_REFS[ref] = list
+        end
+      end
       content
     end
 
@@ -69,6 +85,7 @@ module Jekyll::Spaceship
             handle_multi_rows(data)
             handle_text_align(data)
             handle_rowspan(data)
+            handle_attr_list(data)
           end
         end
         rows.each do |row|
@@ -233,6 +250,52 @@ module Jekyll::Spaceship
         style = align
       end
       cell.set_attribute('style', style)
+    end
+
+    # Examples:
+    # {:ref-name: .cls1 title="hello" }
+    # {: #id ref-name data="world" }
+    # {: #id title="hello" }
+    # {: .cls style="color: #333" }
+    def handle_attr_list(data)
+      cell = data.cell
+      content = cell.inner_html
+      # inline attribute list(IAL) handler
+      ial_handler = ->(list) do
+        list.scan(/(\S+)=("|')(.*?)\2|(\S+)/) do |attr|
+          key = attr[0]
+          val = attr[2]
+          single = attr[3]
+          if !key.nil?
+            val = (cell.get_attribute(key) || '') + val
+            cell.set_attribute(key, val)
+          elsif !single.nil?
+            if single.start_with? '#'
+              key = 'id'
+              val = single[1..-1]
+            elsif single.start_with? '.'
+              key = 'class'
+              val = cell.get_attribute(key) || ''
+              val += (val.size.zero? ? '' : ' ') + single[1..-1]
+            elsif ATTR_LIST_REFS.has_key? single
+              ial_handler.call ATTR_LIST_REFS[single]
+            end
+            unless key.nil?
+              cell.set_attribute(key, val)
+            end
+          end
+        end
+      end
+      # handle attribute list
+      content.scan(ATTR_LIST_PATTERN) do |result|
+        ref = result[1]
+        list = result[2]
+        # handle inline attribute list
+        ial_handler.call list if ref.nil?
+        # remove attr_list
+        content = content.sub(result[0], '')
+      end
+      cell.inner_html = content
     end
 
     def handle_format(data)
