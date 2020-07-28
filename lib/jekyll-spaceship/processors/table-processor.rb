@@ -19,7 +19,9 @@ module Jekyll::Spaceship
       if references.size > 0
         content.scan(/[^\n]*(?<!\\)\|[^\n]*/) do |result|
           references.each do |key, val|
-            replace = result.gsub(/\[([^\n]*)\]\s*\[#{key}\]/, "[\1](#{val})")
+            replace = result.gsub(
+              /\[([^\n\]]*?)\]\s*\[#{key}\]/,
+              "[\1](#{val})")
             next if result == replace
             content = content.gsub(result, replace)
           end
