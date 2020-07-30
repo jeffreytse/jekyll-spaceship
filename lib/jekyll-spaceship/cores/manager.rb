@@ -69,7 +69,7 @@ module Jekyll::Spaceship
     end
 
     def self.ext(page)
-      ext = page.path.match(/\.\S+$/)
+      ext = page.path.match(/\.[^.]+$/)
       ext.to_s.rstrip
     end
 
