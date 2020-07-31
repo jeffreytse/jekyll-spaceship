@@ -160,7 +160,7 @@ module Jekyll::Spaceship
         elsif type == :math
           regex = /(((?<!\\)\${1,2})[^\n]*?\1)/
         elsif type == :liquid_filter
-          regex = /((?<!\\)\{\{[^\n]*?\}\})/
+          regex = /((?<!\\)((\{\{[^\n]*?\}\})|(\{%[^\n]*?%\})))/
         end
         next if regex.nil?
         content.scan(regex) do |match_data|
