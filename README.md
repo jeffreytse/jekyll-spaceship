@@ -166,12 +166,16 @@ jekyll-spaceship:
     - emoji-processor
     - element-processor
   mathjax-processor:
-    src:  //cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+    src:
+      - https://polyfill.io/v3/polyfill.min.js?features=es6
+      - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
     config:
-      tex2jax:
+      tex:
         inlineMath:
           - ['$','$']
           - ['\(','\)']
+      svg:
+        fontCache: 'global'
   plantuml-processor:
     mode: default  # mode value 'pre-fetch' for fetching image at building stage
     css:
