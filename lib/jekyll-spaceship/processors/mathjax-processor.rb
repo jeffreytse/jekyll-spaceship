@@ -6,9 +6,13 @@ module Jekyll::Spaceship
   class MathjaxProcessor < Processor
     def self.config
       {
-        'src' => '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+        'src' => [
+          'https://polyfill.io/v3/polyfill.min.js?features=es6',
+          'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+        ],
         'config' => {
-          'tex2jax' => { 'inlineMath' => [['$','$'], ['\\(','\\)']] }
+          'tex' => { 'inlineMath' => [['$','$'], ['\\(','\\)']] },
+          'svg': { 'fontCache': 'global' }
         }
       }
     end
@@ -27,8 +31,15 @@ module Jekyll::Spaceship
 
       self.handled = true
 
-      cfg = "MathJax.Hub.Config(#{config['config'].to_json});"
-      head.add_child("<script src=\"#{config['src']}\">#{cfg}</script>")
+      # add mathjax config
+      cfg = config['config'].to_json
+      head.add_child("<script>MathJax=#{cfg}</script>")
+
+      # add mathjax dependencies
+      config['src'] = [config['src']] if config['src'].is_a? String
+      config['src'].each do |src|
+        head.add_child("<script src=\"#{src}\"></script>")
+      end
 
       doc.to_html
     end
