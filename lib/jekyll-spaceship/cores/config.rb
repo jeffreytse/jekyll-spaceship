@@ -10,7 +10,7 @@ module Jekyll::Spaceship
         'plantuml-processor',
         'mermaid-processor',
         'polyfill-processor',
-        'video-processor',
+        'media-processor',
         'emoji-processor',
         'element-processor'
       ]
