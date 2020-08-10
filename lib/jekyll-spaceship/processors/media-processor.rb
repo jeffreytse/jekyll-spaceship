@@ -7,22 +7,13 @@ module Jekyll::Spaceship
     def self.config
       {
         'default' => {
-          'audio' => {
-            'id' => 'audio-{id}',
-            'class' => 'audio',
-            'autoplay' => false,
-            'loop' => false,
-            'style' => 'outline: none',
-          },
-          'video' => {
-            'id' => 'video-{id}',
-            'class' => 'video',
-            'width' => '100%',
-            'height' => 350,
-            'frameborder' => 0,
-            'style' => 'max-width: 600px',
-            'allow' => 'encrypted-media; picture-in-picture',
-          }
+          'id' => 'media-{id}',
+          'class' => 'media',
+          'width' => '100%',
+          'height' => 350,
+          'frameborder' => 0,
+          'style' => 'max-width: 600px;outline: none',
+          'allow' => 'encrypted-media; picture-in-picture'
         }
       }
     end
@@ -33,6 +24,8 @@ module Jekyll::Spaceship
       content = handle_youtube(content)
       content = handle_vimeo(content)
       content = handle_dailymotion(content)
+      content = handle_spotify(content)
+      content = handle_soundcloud(content)
     end
 
     # Examples:
@@ -53,9 +46,9 @@ module Jekyll::Spaceship
     # ![video](//techslides.com/demos/sample-videos/small.mp4?width=400)
     def handle_normal_video(content)
       handle_media(content, {
-        media_type: 'video',
+        media_type: 'iframe',
         host: '(https?:)?\\/\\/.*\\/',
-        id: '(.+?\\.(avi|mp4|webm|ogg|ogv|flv|mkv|mov|wmv|3gp|rmvb|asf))',
+        id: '(.+?\\.(avi|mp4|webm|ogg|ogv|flv|mkv|mov|wmv|3gp|rmvb|asf))'
       })
     end
 
@@ -65,7 +58,7 @@ module Jekyll::Spaceship
     # ![youtube](//youtu.be/mEP3YXaSww8?height=100%&width=400)
     def handle_youtube(content)
       handle_media(content, {
-        media_type: 'video',
+        media_type: 'iframe',
         host: '(https?:)?\\/\\/.*youtu.*',
         id: '(?<=\\?v\\=|embed\\/|\\.be\\/)([a-zA-Z0-9\\_\\-]+)',
         base_url: "https://www.youtube.com/embed/"
@@ -77,7 +70,7 @@ module Jekyll::Spaceship
     # ![vimeo](https://vimeo.com/263856289?height=100%&width=400)
     def handle_vimeo(content)
       handle_media(content, {
-        media_type: 'video',
+        media_type: 'iframe',
         host: '(https?:)?\\/\\/vimeo\\.com\\/',
         id: '([0-9]+)',
         base_url: "https://player.vimeo.com/video/"
@@ -89,10 +82,37 @@ module Jekyll::Spaceship
     # ![dailymotion](https://dai.ly/x7tgcev?height=100%&width=400)
     def handle_dailymotion(content)
       handle_media(content, {
-        media_type: 'video',
+        media_type: 'iframe',
         host: '(https?:)?\\/\\/.*dai.?ly.*',
         id: '(?<=video\\/|\\/)([a-zA-Z0-9\\_\\-]+)',
         base_url: "https://www.dailymotion.com/embed/video/"
+      })
+    end
+
+    # Examples:
+    # ![spotify](//open.spotify.com/track/4Dg5moVCTqxAb7Wr8Dq2T5)
+    # ![spotify](//open.spotify.com/track/37mEkAaqCE7FXMvnlVA8pp?width=400)
+    def handle_spotify(content)
+      handle_media(content, {
+        media_type: 'iframe',
+        host: '(https?:)?\\/\\/open\\.spotify\\.com\\/track\\/',
+        id: '(?<=track\\/)([a-zA-Z0-9\\_\\-]+)',
+        base_url: "https://open.spotify.com/embed/track/",
+        height: 80
+      })
+    end
+
+    # Examples:
+    # ![soundcloud](//soundcloud.com/aviciiofficial/preview-avicii-vs-lenny)
+    def handle_soundcloud(content)
+      handle_media(content, {
+        media_type: 'iframe',
+        id_from: 'html',
+        host: '(https?:)?\\/\\/soundcloud\\.com\\/.+\\/[^\\?]+',
+        id: '(?<=soundcloud:\\/\\/sounds:)([0-9]+)',
+        base_url: "https://w.soundcloud.com/player/?url="\
+          "https%3A//api.soundcloud.com/tracks/",
+        height: 125,
       })
     end
 
@@ -102,7 +122,7 @@ module Jekyll::Spaceship
 
       media_type = data[:media_type]
       base_url = data[:base_url]
-      id = data[:id]
+      id = data[:id_from] === 'html' ? '()' : data[:id]
       url = "(#{host}#{id}\\S*)"
       title = '("(.*)".*){0,1}'
 
@@ -121,14 +141,16 @@ module Jekyll::Spaceship
       regex = /(\!\[(.*)\]\(.*#{url}\s*#{title}\))/
       content.scan regex do |match_data|
         url = match_data[2]
-        id = match_data[4]
+        id = data[:id_from] === 'html' \
+          ? get_id_from_html(url, data[:id]) \
+          : match_data[4]
         title = match_data[6]
         qs = url.match(/(?<=\?)(\S*?)$/)
         qs = Hash[URI.decode_www_form(qs.to_s)].reject do |k, v|
           next true if v == id or v == ''
         end
 
-        cfg = self.config['default'][media_type].clone
+        cfg = self.config['default'].clone
         cfg['id'] = qs['id'] || cfg['id']
         cfg['class'] = qs['class'] || cfg['class']
         cfg['style'] = qs['style'] || cfg['style']
@@ -145,13 +167,13 @@ module Jekyll::Spaceship
           cfg['loop'] = qs['loop'] || data[:loop] || cfg['loop']
           cfg['style'] += ';display: none;' if qs['hidden']
           content = handle_audio(content, { target: match_data[0], cfg: cfg })
-        when 'video'
+        when 'iframe'
           cfg['title'] = title
           cfg['width'] = qs['width'] || data[:width] || cfg['width']
           cfg['height'] = qs['height'] || data[:height] || cfg['height']
           cfg['frameborder'] = qs['frameborder'] || cfg['frameborder']
           cfg['allow'] ||= cfg['allow']
-          content = handle_video(content, { target: match_data[0], cfg: cfg })
+          content = handle_iframe(content, { target: match_data[0], cfg: cfg })
         end
         self.handled = true
       end
@@ -175,7 +197,7 @@ module Jekyll::Spaceship
       content.gsub(data[:target], html)
     end
 
-    def handle_video(content, data)
+    def handle_iframe(content, data)
       cfg = data[:cfg]
       html = "<iframe"\
         " id=\"#{cfg['id']}\""\
@@ -190,6 +212,23 @@ module Jekyll::Spaceship
         " allowfullscreen>"\
         "</iframe>"
       content.gsub(data[:target], html)
+    end
+
+    def get_id_from_html(url, pattern)
+      id = ''
+      begin
+        url = 'https:' + url if url.start_with? '//'
+        res = Net::HTTP.get_response URI(url)
+        raise res.body unless res.is_a?(Net::HTTPSuccess)
+        res.body.match pattern do |match_data|
+          id = match_data[0]
+          break
+        end
+      rescue StandardError => msg
+        data = url
+        logger.log msg
+      end
+      id
     end
   end
 end
