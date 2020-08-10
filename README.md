@@ -107,11 +107,14 @@ Spaceship is a minimalistic, powerful and extremely customizable [Jekyll](https:
     - [2.2 How to use?](#22-how-to-use)
   - [3. PlantUML Usage](#3-plantuml-usage)
   - [4. Mermaid Usage](#4-mermaid-usage)
-  - [5. Video Usage](#5-video-usage)
+  - [5. Media Usage](#5-media-usage)
     - [5.1 Youtube Usage](#youtube-usage)
     - [5.2 Vimeo Usage](#vimeo-usage)
     - [5.3 DailyMotion Usage](#dailymotion-usage)
-    - [5.4 General Video Usage](#general-video-usage)
+    - [5.4 Spotify Usage](#spotify-usage)
+    - [5.5 SoundCloud Usage](#soundcloud-usage)
+    - [5.6 General Video Usage](#general-video-usage)
+    - [5.7 General Audio Usage](#general-audio-usage)
   - [6. Hybrid HTML with Markdown](#6-hybrid-html-with-markdown)
   - [7. Markdown Polyfill](#7-markdown-polyfill)
     - [7.1 Escape Ordered List](#71-escape-ordered-list)
@@ -162,7 +165,7 @@ jekyll-spaceship:
     - plantuml-processor
     - mermaid-processor
     - polyfill-processor
-    - video-processor
+    - media-processor
     - emoji-processor
     - element-processor
   mathjax-processor:
@@ -194,14 +197,14 @@ jekyll-spaceship:
     config:
       theme: default
     src: https://mermaid.ink/svg/
-  video-processor:
+  media-processor:
     default:
-      id: 'video-{id}'
-      class: 'video'
+      id: 'media-{id}'
+      class: 'media'
       width: '100%'
       height: 350
-      border: 0
-      style: 'max-width: 600px'
+      frameborder: 0
+      style: 'max-width: 600px; outline: none;'
       allow: 'encrypted-media; picture-in-picture'
   emoji-processor:
     css:
@@ -705,25 +708,31 @@ Code above would be parsed as:
 
 ![Mermaid Diagram](https://user-images.githubusercontent.com/9413601/85282355-2e317300-b4be-11ea-9c30-8f9d61540d14.png)
 
-### 5. Video Usage
+### 5. Media Usage
 
-How often did you find yourself googling "**How to embed a video in markdown?**"
+How often did you find yourself googling "**How to embed a video/audio in markdown?**"
 
-While its not possible to embed a video in markdown, the best and easiest way is to extract a frame from the video. To add videos to your markdown files easier I developped this tool for you, and it will parse the video link inside the image block automatically.
+While its not possible to embed a video/audio in markdown, the best and easiest
+way is to extract a frame from the video/audio. To add videos/audios to your
+markdown files easier I developped this tool for you, and it will parse the
+video/audio link inside the image block automatically.
 
-**For now, these video links parsing are provided:**
+**For now, these media links parsing are provided:**
 
 - Youtube
 - Vimeo
 - DailyMotion
-- General Video ( mp4 | avi | webm | ogg | ogv | 3gp | flv | mov ... )
+- Spotify
+- SoundCloud
+- General Video ( mp4 | avi | ogg | ogv | webm | 3gp | flv | mov ... )
+- General Audio ( mp3 | wav | ogg | mid | midi | aac | wma ... )
 
-There are two ways to embed a video in your Jekyll blog page:
+There are two ways to embed a video/audio in your Jekyll blog page:
 
 Inline-style:
 
 ```markdown
-![]({video-link})
+![]({media-link})
 ```
 
 Reference-style:
@@ -731,10 +740,10 @@ Reference-style:
 ```markdown
 ![][{reference}]
 
-[{reference}]: {video-link}
+[{reference}]: {media-link}
 ```
 
-For configuring video attributes (e.g, width, height), just adding query string to
+For configuring media attributes (e.g, width, height), just adding query string to
 the link as below:
 
 ```markdown
@@ -767,6 +776,22 @@ the link as below:
 ![](https://dai.ly/x7tgcev?width=100%&height=400)
 ```
 
+#### Spotify Usage
+
+```markdown
+![](http://open.spotify.com/track/4Dg5moVCTqxAb7Wr8Dq2T5)
+```
+
+<image width="600" src="https://user-images.githubusercontent.com/9413601/89762618-5d11b000-db23-11ea-81db-35cc3682b234.png">
+
+#### SoundCloud Usage
+
+```markdown
+![](https://soundcloud.com/aviciiofficial/preview-avicii-vs-lenny)
+```
+
+<image width="600" src="https://user-images.githubusercontent.com/9413601/89762969-1c666680-db24-11ea-97e3-4340f7fac7ac.png">
+
 #### General Video Usage
 
 ```markdown
@@ -777,6 +802,15 @@ the link as below:
 ![](//techslides.com/demos/sample-videos/small.mp4?width=400)
 ```
 
+#### General Audio Usage
+
+```markdown
+![](//www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3)
+
+![](//www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3?autoplay=1&loop=1)
+```
+
+<image width="300" src="https://user-images.githubusercontent.com/9413601/89762143-68181080-db22-11ea-8467-e8b2a8a96ae5.png">
 
 ### 6. Hybrid HTML with Markdown
 
@@ -950,7 +984,7 @@ jekyll-spaceship:
     css:
       - a:                                     # Replce all `a` tags
           props:                               #
-            loading: lazy                      # Replace `lading` value to `lazy`
+            loading: lazy                      # Replace `loading` value to `lazy`
 ```
 
 In case you want to prevent loading some images/iframes lazily, add
