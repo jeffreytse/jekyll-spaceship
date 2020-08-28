@@ -637,7 +637,7 @@ Code above would be parsed as:
 
 ### 3. PlantUML Usage
 
-[PlantUML](http://plantuml.sourceforge.net/) is a component that allows to quickly write:
+[PlantUML](https://plantuml.com) is a component that allows to quickly write:
 
 - sequence diagram,
 - use case diagram,
