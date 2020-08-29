@@ -146,7 +146,7 @@ plugins:
 
 **💡 Tip:** Note that GitHub Pages runs in `safe` mode and only allows [a set of whitelisted plugins](https://pages.github.com/versions/). To use the gem in GitHub Pages, you need to build locally or use CI (e.g. [travis](https://travis-ci.org/), [github workflow](https://help.github.com/en/actions/configuring-and-managing-workflows/configuring-a-workflow)) and deploy to your `gh-pages` branch.
 
-### Additions
+### Additions for Unlimited GitHub Pages
 
 * Here is a GitHub Action named [jekyll-deploy-action](https://github.com/jeffreytse/jekyll-deploy-action) for Jekyll site deployment conveniently. 👍
 * Here is a [Jekyll site](https://github.com/jeffreytse/jekyll-jeffreytse-blog) using Travis to build and deploy to GitHub Pages for your references.
