@@ -67,6 +67,8 @@ module Jekyll::Spaceship
 
       # render mode
       case self.config['mode']
+      when 'inline'
+        return get_mermaid_svg(url)
       when 'pre-fetch'
         url = self.get_mermaid_img_data(url)
       end
@@ -106,6 +108,19 @@ module Jekyll::Spaceship
         content_type = res.header['Content-Type']
         raise 'Unknown content type!' if content_type.nil?
         data = "data:#{content_type};base64, #{data}"
+      rescue StandardError => msg
+        data = url
+        logger.log msg
+      end
+      data
+    end
+
+    def get_mermaid_svg(url)
+      data = ''
+      begin
+        res = Net::HTTP.get_response URI(url)
+        raise res.body unless res.is_a?(Net::HTTPSuccess)
+        data = res.body.force_encoding('UTF-8')
       rescue StandardError => msg
         data = url
         logger.log msg
