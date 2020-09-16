@@ -17,7 +17,7 @@ module Jekyll::Spaceship
         'css' => {
           'class' => 'plantuml'
         },
-        'src' => 'http://www.plantuml.com/plantuml/png/'
+        'src' => 'http://www.plantuml.com/plantuml/svg/'
       }
     end
 
@@ -59,18 +59,20 @@ module Jekyll::Spaceship
     def handle_plantuml(code)
       # wrap plantuml code
       code = "@startuml#{code}@enduml".encode('UTF-8')
-
-      url = get_url(code)
+      url = self.get_url(code)
 
       # render mode
       case self.config['mode']
       when 'pre-fetch'
-        url = self.get_plantuml_img_data(url)
+        data = self.class.fetch_img_data(url)
+      end
+      if data.nil?
+        data = { 'type' => 'url', 'body' => url }
       end
 
       # return img tag
-      css_class = self.config['css']['class']
-      "<img class=\"#{css_class}\" src=\"#{url}\">"
+      data['class'] = self.config['css']['class']
+      self.class.make_img_tag(data)
     end
 
     def get_url(code)
@@ -86,22 +88,6 @@ module Jekyll::Spaceship
       else
         raise "No supported src ! #{src}"
       end
-    end
-
-    def get_plantuml_img_data(url)
-      data = ''
-      begin
-        res = Net::HTTP.get_response URI(url)
-        raise res.body unless res.is_a?(Net::HTTPSuccess)
-        data = Base64.encode64(res.body)
-        content_type = res.header['Content-Type']
-        raise 'Unknown content type!' if content_type.nil?
-        data = "data:#{content_type};base64, #{data}"
-      rescue StandardError => msg
-        data = url
-        logger.log msg
-      end
-      data
     end
   end
 end
