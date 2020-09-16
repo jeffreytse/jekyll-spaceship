@@ -186,7 +186,7 @@ jekyll-spaceship:
     syntax:
       code: 'plantuml!'
       custom: ['@startuml', '@enduml']
-    src: http://www.plantuml.com/plantuml/png/
+    src: http://www.plantuml.com/plantuml/svg/
   mermaid-processor:
     mode: default  # mode value 'pre-fetch' for fetching image at building stage
     css:
