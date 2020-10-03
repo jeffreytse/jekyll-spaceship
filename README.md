@@ -966,7 +966,7 @@ Automatically adds a `target="_blank" rel="noopener noreferrer"` attribute to al
 jekyll-spaceship:
   element-processor:
     css:
-      - a:                                     # Replce all `a` tags
+      - a:                                     # Replace all `a` tags
           props:
             class: ['(^.*$)', '\0 ext-link']   # Add `ext-link` to class by regex pattern
             target: _blank                     # Replace `target` value to `_blank`
@@ -982,7 +982,7 @@ Automatically adds `loading="lazy"` to `img` and `iframe` tags to natively load 
 jekyll-spaceship:
   element-processor:
     css:
-      - a:                                     # Replce all `a` tags
+      - a:                                     # Replace all `a` tags
           props:                               #
             loading: lazy                      # Replace `loading` value to `lazy`
 ```
@@ -997,7 +997,7 @@ See the following examples to prevent lazy loading.
 jekyll-spaceship:
   element-processor:
     css:
-      - a:                                     # Replce all `a` tags
+      - a:                                     # Replace all `a` tags
           props:                               #
             loading: eager                     # Replace `loading` value to `eager`
 ```
