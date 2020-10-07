@@ -116,7 +116,7 @@ module Jekyll::Spaceship
         if self.respond_to? method
           @page.content = self.pre_exclude @page.content
           @page.content = self.send method, @page.content
-          @page.content = self.after_exclude @page.content
+          @page.content = self.post_exclude @page.content
         end
       else
         if Type.html? output_ext
@@ -151,8 +151,8 @@ module Jekyll::Spaceship
       logger.log file
     end
 
-    def pre_exclude(content)
-      @exclusion_store = []
+    def exclusion_regexs()
+      regexs = []
       @exclusions.each do |type|
         regex = nil
         if type == :code
@@ -162,7 +162,14 @@ module Jekyll::Spaceship
         elsif type == :liquid_filter
           regex = /((?<!\\)((\{\{[^\n]*?\}\})|(\{%[^\n]*?%\})))/
         end
-        next if regex.nil?
+        regexs.push regex unless regex.nil?
+      end
+      regexs
+    end
+
+    def pre_exclude(content, regexs = self.exclusion_regexs())
+      @exclusion_store = []
+      regexs.each do |regex|
         content.scan(regex) do |match_data|
           match = match_data[0]
           id = @exclusion_store.size
@@ -173,7 +180,7 @@ module Jekyll::Spaceship
       content
     end
 
-    def after_exclude(content)
+    def post_exclude(content)
       while @exclusion_store.size > 0
         match = @exclusion_store.pop
         id = @exclusion_store.size

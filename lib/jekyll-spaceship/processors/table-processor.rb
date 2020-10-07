@@ -305,10 +305,12 @@ module Jekyll::Spaceship
       cvter = self.converter('markdown')
       return if cvter.nil?
       content = cell.inner_html
+      content = self.pre_exclude(content, [/(\<code.*\>.*\<\/code\>)/])
         .gsub(/(?<!\\)\|/, '\\|')
         .gsub(/^\s+|\s+$/, '')
         .gsub(/&lt;/, '<')
         .gsub(/&gt;/, '>')
+      content = self.post_exclude(content)
       content = cvter.convert(content)
       content = Nokogiri::HTML.fragment(content)
       if content.children.first&.name == 'p'
