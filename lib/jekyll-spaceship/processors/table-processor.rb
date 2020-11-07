@@ -43,7 +43,7 @@ module Jekyll::Spaceship
           .gsub(/((?<!\\)\${1,2})[^\n]*?\1/, '')
           .match(/(?<!\\)\|/)
         replace = result.gsub(
-          /(?<!(?<!\\)\\)(\*|\$|\[|\(|\"|_)/, '\\\\\\\\\1')
+          /(?<!(?<!\\)\\)(\*|\$|\[(?!\^)|\(|\"|_)/, '\\\\\\\\\1')
         next if result == replace
         content = content.gsub(result, replace)
       end
