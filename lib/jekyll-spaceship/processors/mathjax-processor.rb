@@ -13,6 +13,13 @@ module Jekyll::Spaceship
         'config' => {
           'tex' => { 'inlineMath' => [['$','$'], ['\\(','\\)']] },
           'svg': { 'fontCache': 'global' }
+        },
+        'optimize' => {
+          'enabled' => true,
+          'patterns' => [
+            '(?<!\\\\)\\$.+?(?<!\\\\)\\$',
+            '(?<!\\\\)\\\\\\(.+?(?<!\\\\)\\\\\\)'
+          ]
         }
       }
     end
@@ -45,15 +52,16 @@ module Jekyll::Spaceship
     end
 
     def has_mathjax_expression?(doc)
-      doc.css('*').each do |node|
-        if node.content.match(/(?<!\\)\$.+(?<!\\)\$/)
-          return true
-        end
-        if node.content.match(/(?<!\\)\\\(.+(?<!\\)\\\)/)
+      optimize = config['optimize']
+      return true if not optimize['enabled']
+      # check normal mathjax expression
+      doc.css(':not(script)').each do |node|
+        optimize['patterns'].each do |ft|
+          next if not node.content.match(/#{ft}/)
           return true
         end
       end
-
+      # check scripting mathjax expression
       doc.css('script').each do |node|
         type = node['type']
         if type and type.match(/math\/tex/)
