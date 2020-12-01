@@ -179,6 +179,11 @@ jekyll-spaceship:
           - ['\(','\)']
       svg:
         fontCache: 'global'
+    optimize:
+      enabled: true
+      patterns:
+        - (?<!\\)\\$.+?(?<!\\)\\$
+        - (?<!\\)\\\(.+?(?<!\\)\\\)
   plantuml-processor:
     mode: default  # mode value 'pre-fetch' for fetching image at building stage
     css:
