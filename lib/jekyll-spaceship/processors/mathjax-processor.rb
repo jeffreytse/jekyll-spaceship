@@ -25,7 +25,22 @@ module Jekyll::Spaceship
     end
 
     def process?
-      return true if Type.html?(output_ext)
+      return true if Type.html?(output_ext) or Type.markdown?(output_ext)
+    end
+
+    def on_handle_markdown(content)
+      # pre-handle mathjax expressions in markdown
+      patterns = config['optimize']['patterns']
+      patterns.each do |pattern|
+        content.scan(/(#{pattern})/) do |result|
+          expr = result[0]
+          escaped_expr = expr
+            .gsub(/(?<!^)\\(?!\S$)/, '\\\\\\\\')
+            .gsub(/\\ /, '\\\\\\ ')
+          content = content.gsub(expr, escaped_expr)
+        end
+      end
+      content
     end
 
     def on_handle_html(content)
@@ -52,23 +67,31 @@ module Jekyll::Spaceship
     end
 
     def has_mathjax_expression?(doc)
-      optimize = config['optimize']
-      return true if not optimize['enabled']
-      # check normal mathjax expression
-      doc.css(':not(script)').each do |node|
-        optimize['patterns'].each do |ft|
-          next if not node.content.match(/#{ft}/)
-          return true
-        end
-      end
-      # check scripting mathjax expression
-      doc.css('script').each do |node|
-        type = node['type']
-        if type and type.match(/math\/tex/)
-          return true
-        end
+      return true unless config['optimize']['enabled']
+      scan_mathjax_expression(doc) do |node, result|
+        return true
       end
       false
+    end
+
+    def scan_mathjax_expression(doc, &block)
+      patterns = config['optimize']['patterns']
+      doc.css('*').each do |node|
+        next if node.ancestors('code, pre').size > 0
+        next if node.children.size > 1
+        patterns.each do |pattern|
+          # check scripting mathjax expression
+          if node.name == 'script'
+            type = node['type']
+            next unless type
+            next unless type.match(/math\/tex/)
+          end
+          # check normal mathjax expression
+          node.content.scan(/(#{pattern})/) do |result|
+            block.call(node, result[0])
+          end
+        end
+      end
     end
   end
 end
