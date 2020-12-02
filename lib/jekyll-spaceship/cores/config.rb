@@ -31,6 +31,16 @@ module Jekyll::Spaceship
       first.merge(second.to_h, &merger)
     end
 
+    def self.deep_dig(obj, key)
+      if obj.respond_to?(:key?) && obj.key?(key)
+        obj[key]
+      elsif obj.respond_to?(:each)
+        result = nil
+        obj.find { |*a| result = self.deep_dig(a.last, key) }
+        result
+      end
+    end
+
     def self.store(section, default)
       return @@store[section] if default.nil?
       @@store[section] = deep_merge(default, @@store[section])
