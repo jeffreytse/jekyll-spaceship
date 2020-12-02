@@ -177,13 +177,15 @@ jekyll-spaceship:
         inlineMath:
           - ['$','$']
           - ['\(','\)']
+        displayMath:
+          - ['$$','$$']
+          - ['\[','\]']
       svg:
         fontCache: 'global'
-    optimize:
-      enabled: true
-      patterns:
-        - (?<!\\)\\$.+?(?<!\\)\\$
-        - (?<!\\)\\\(.+?(?<!\\)\\\)
+    optimize: # optimization on building stage to check and add mathjax scripts
+      enabled: true # value `false` for adding to all pages
+      include: []   # include patterns for math expressions checking (regexp)
+      exclude: []   # exclude patterns for math expressions checking (regexp)
   plantuml-processor:
     mode: default  # mode value 'pre-fetch' for fetching image at building stage
     css:
