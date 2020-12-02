@@ -25,7 +25,11 @@ module Jekyll::Spaceship
     attr_accessor :handled
 
     def name
-      self.class.name.split('::').last
+      self.class.class_name
+    end
+
+    def self.class_name
+      self.name.split('::').last
     end
 
     def filename
@@ -212,6 +216,7 @@ module Jekyll::Spaceship
           'body' => content_body
         }
       rescue StandardError => msg
+        logger = Logger.new(self.class_name)
         logger.log msg
       end
     end
