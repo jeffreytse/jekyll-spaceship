@@ -105,7 +105,8 @@ module Jekyll::Spaceship
     def scan_mathjax_expression(doc, &block)
       patterns = get_math_patterns()
       doc.css('*').each do |node|
-        next if node.ancestors('code, pre').size > 0
+        next if ['code', 'pre', 'figure'].include? node.name
+        next if node.ancestors('code, pre, figure').size > 0
         next if node.children.size > 1
         patterns['include'].each do |pattern|
           # check scripting mathjax expression
