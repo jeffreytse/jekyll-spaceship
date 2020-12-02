@@ -11,15 +11,16 @@ module Jekyll::Spaceship
           'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
         ],
         'config' => {
-          'tex' => { 'inlineMath' => [['$','$'], ['\\(','\\)']] },
+          'tex' => {
+            'inlineMath' => [['$','$'], ['\\(','\\)']],
+            'displayMath' => [['$$','$$'], ['\\[','\\]']]
+          },
           'svg': { 'fontCache': 'global' }
         },
         'optimize' => {
           'enabled' => true,
-          'patterns' => [
-            '(?<!\\\\)\\$.+?(?<!\\\\)\\$',
-            '(?<!\\\\)\\\\\\(.+?(?<!\\\\)\\\\\\)'
-          ]
+          'include' => [],
+          'exclude' => []
         }
       }
     end
@@ -30,10 +31,15 @@ module Jekyll::Spaceship
 
     def on_handle_markdown(content)
       # pre-handle mathjax expressions in markdown
-      patterns = config['optimize']['patterns']
-      patterns.each do |pattern|
-        content.scan(/(#{pattern})/) do |result|
+      patterns = get_math_patterns()
+      patterns['include'].each do |pattern|
+        content.scan(pattern) do |result|
           expr = result[0]
+          is_excluded = false
+          patterns['exclude'].each do |pe|
+            break is_excluded = true if expr.match(/#{pe}/)
+          end
+          next if is_excluded
           escaped_expr = expr
             .gsub(/(?<!^)\\(?!\S$)/, '\\\\\\\\')
             .gsub(/\\ /, '\\\\\\ ')
@@ -67,19 +73,41 @@ module Jekyll::Spaceship
     end
 
     def has_mathjax_expression?(doc)
-      return true unless config['optimize']['enabled']
-      scan_mathjax_expression(doc) do |node, result|
+      return true unless config['optimize']['enabled'] == true
+      scan_mathjax_expression(doc) do
         return true
       end
       false
     end
 
+    def get_math_patterns()
+      patterns = []
+      math_patterns = []
+      ['tex', 'tex2jax'].each do |t|
+        ['inlineMath', 'displayMath'].each do |m|
+          r = config.dig('config', t, m)
+          r&.each do |i|
+            btag = Regexp.escape(i[0])
+            etag = Regexp.escape(i[1])
+            patterns <<= /((?<!\\\\)#{btag}.+?(?<!\\\\)#{etag})/
+          end
+        end
+      end
+      config['optimize']['include'].each do |pattern|
+        patterns <<= /(#{pattern})/
+      end
+      {
+        'include' => patterns,
+        'exclude' => config['optimize']['exclude']
+      }
+    end
+
     def scan_mathjax_expression(doc, &block)
-      patterns = config['optimize']['patterns']
+      patterns = get_math_patterns()
       doc.css('*').each do |node|
         next if node.ancestors('code, pre').size > 0
         next if node.children.size > 1
-        patterns.each do |pattern|
+        patterns['include'].each do |pattern|
           # check scripting mathjax expression
           if node.name == 'script'
             type = node['type']
@@ -87,8 +115,14 @@ module Jekyll::Spaceship
             next unless type.match(/math\/tex/)
           end
           # check normal mathjax expression
-          node.content.scan(/(#{pattern})/) do |result|
-            block.call(node, result[0])
+          node.content.scan(pattern) do |result|
+            expr = result[0]
+            is_excluded = false
+            patterns['exclude'].each do |pe|
+              break is_excluded = true if expr.match(/#{pe}/)
+            end
+            next if is_excluded
+            block.call(node, expr)
           end
         end
       end
