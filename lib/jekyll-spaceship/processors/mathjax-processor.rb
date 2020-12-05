@@ -42,6 +42,7 @@ module Jekyll::Spaceship
           next if is_excluded
           escaped_expr = expr
             .gsub(/(?<!^)\\(?!\S$)/, '\\\\\\\\')
+            .gsub(/(?<!\\)\$/, '\\\$')
             .gsub(/\\ /, '\\\\\\ ')
           content = content.gsub(expr, escaped_expr)
         end
@@ -89,7 +90,7 @@ module Jekyll::Spaceship
           r&.each do |i|
             btag = Regexp.escape(i[0])
             etag = Regexp.escape(i[1])
-            patterns <<= /((?<!\\\\)#{btag}.+?(?<!\\\\)#{etag})/
+            patterns <<= /((?<!\\\\)#{btag}.*?(?<!\\\\)#{etag})/
           end
         end
       end
