@@ -35,6 +35,8 @@ module Jekyll::Spaceship
       patterns['include'].each do |pattern|
         content.scan(pattern) do |result|
           expr = result[0]
+          body = result[1]
+          next if body.size.zero?
           is_excluded = false
           patterns['exclude'].each do |pe|
             break is_excluded = true if expr.match(/#{pe}/)
@@ -90,7 +92,7 @@ module Jekyll::Spaceship
           r&.each do |i|
             btag = Regexp.escape(i[0])
             etag = Regexp.escape(i[1])
-            patterns <<= /((?<!\\\\)#{btag}.*?(?<!\\\\)#{etag})/
+            patterns <<= /((?<!\\\\)#{btag}(.*?)(?<!\\\\)#{etag})/
           end
         end
       end
@@ -119,6 +121,8 @@ module Jekyll::Spaceship
           # check normal mathjax expression
           node.content.scan(pattern) do |result|
             expr = result[0]
+            body = result[1]
+            next if body.size.zero?
             is_excluded = false
             patterns['exclude'].each do |pe|
               break is_excluded = true if expr.match(/#{pe}/)
