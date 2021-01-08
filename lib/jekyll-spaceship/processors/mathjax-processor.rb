@@ -44,7 +44,7 @@ module Jekyll::Spaceship
           next if is_excluded
           escaped_expr = expr
             .gsub(/(?<!^)\\(?!\S$)/, '\\\\\\\\')
-            .gsub(/(?<!\\)\$/, '\\\$')
+            .gsub(/(?<!\\)\$\$/, '\\\$\\\$')
             .gsub(/\\ /, '\\\\\\ ')
           content = content.gsub(expr, escaped_expr)
         end
