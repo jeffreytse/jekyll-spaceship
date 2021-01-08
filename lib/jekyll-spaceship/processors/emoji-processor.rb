@@ -16,31 +16,63 @@ module Jekyll::Spaceship
     end
 
     def on_handle_html(content)
-      # handle emoji markup
-      content.scan(/:([\w\d+-]+):/) do |match|
+      emoji_filter(content, 'pre code') do |emoji|
+        "<img class=\"#{config['css']['class']}\""\
+          " title=\":#{emoji.name}:\""\
+          " alt=\":#{emoji.name}:\""\
+          " raw=\"#{emoji.raw}\""\
+          " src=\"#{config['src']}#{emoji.image_filename}\""\
+          " style=\"vertical-align: middle; display: inline;"\
+          " max-width: 1em; visibility: hidden;\""\
+          " onload=\"this.style.visibility='visible'\""\
+          " onerror=\"this.replaceWith(this.getAttribute('raw'))\">"\
+          "</img>"
+      end
+    end
+
+    def emoji_filter(content, selector)
+      # use nokogiri to parse html
+      doc = Nokogiri::HTML(content)
+      body = doc.at('body')
+
+      # filter nodes (pre, code)
+      nodes = body.css(selector)
+      nodes.each do |node|
+        # handle emoji markup
+        node.inner_html = node.inner_html.gsub(
+          /:([\w\d+-]+?):/, '\:\1\:'
+        )
+      end
+
+      # parse the emoji
+      content = body.inner_html
+      content.scan(/(?<!\\):([\w\d+-]+?)(?<!\\):/) do |match|
+        # Skip invalid emoji name
         emoji = Emoji.find_by_alias match[0]
         next if emoji.nil?
-        self.handled = true
 
         # escape plus sign
         emoji_name = emoji.name.gsub('+', '\\\+')
-        css_class = self.config['css']['class']
+
+        result = yield emoji
+        next if result.nil?
 
         content = content.gsub(
           /(?<!\=")\s*:#{emoji_name}:\s*(?!"\s)/,
-          "<img class=\"#{css_class}\""\
-            " title=\":#{emoji.name}:\""\
-            " alt=\":#{emoji.name}:\""\
-            " raw=\"#{emoji.raw}\""\
-            " src=\"#{config['src']}#{emoji.image_filename}\""\
-            " style=\"vertical-align: middle; display: inline;"\
-            " max-width: 1em; visibility: hidden;\""\
-            " onload=\"this.style.visibility='visible'\""\
-            " onerror=\"this.replaceWith(this.getAttribute('raw'))\">"\
-          "</img>"
+          result)
+      end
+
+      body.inner_html = content
+
+      # restore nodes (pre, code)
+      nodes.each do |node|
+        # handle emoji markup
+        node.inner_html = node.inner_html.gsub(
+          /\\:([\w\d+-]+?)\\:/, ':\1:'
         )
       end
-      content
+
+      doc.to_html
     end
   end
 end
