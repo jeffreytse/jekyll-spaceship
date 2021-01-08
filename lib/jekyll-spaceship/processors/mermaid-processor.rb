@@ -60,6 +60,9 @@ module Jekyll::Spaceship
     end
 
     def handle_mermaid(code)
+      # Handle extra empty lines, otherwise it would cause error
+      code = code.gsub(/\n\s*\n/, "\n%%-\n")
+
       # encode to UTF-8
       code = code.encode('UTF-8')
       url = get_url(code)
