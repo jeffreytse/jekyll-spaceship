@@ -17,6 +17,10 @@ module Jekyll::Spaceship
 
     def on_handle_html(content)
       emoji_filter(content, 'pre code') do |emoji|
+        # mark current file has been handled
+        self.handled = true
+
+        # here is the replacement content
         "<img class=\"#{config['css']['class']}\""\
           " title=\":#{emoji.name}:\""\
           " alt=\":#{emoji.name}:\""\
