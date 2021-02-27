@@ -441,7 +441,7 @@ Code above would be parsed as:
 #### Cell Alignment
 
 Markdown table syntax use colons ":" for forcing column alignment.  
-Therefore, here we also use it for foring cell alignment.
+Therefore, here we also use it for forcing cell alignment.
 
 Table cell can be set alignment separately.
 
