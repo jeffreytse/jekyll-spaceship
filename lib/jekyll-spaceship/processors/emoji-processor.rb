@@ -37,10 +37,9 @@ module Jekyll::Spaceship
     def emoji_filter(content, selector)
       # use nokogiri to parse html
       doc = Nokogiri::HTML(content)
-      body = doc.at('body')
 
       # filter nodes (pre, code)
-      nodes = body.css(selector)
+      nodes = doc.css(selector)
       nodes.each do |node|
         # handle emoji markup
         node.inner_html = node.inner_html.gsub(
@@ -49,7 +48,7 @@ module Jekyll::Spaceship
       end
 
       # parse the emoji
-      content = body.inner_html
+      content = doc.inner_html
       content.scan(/(?<!\\):([\w\d+-]+?)(?<!\\):/) do |match|
         # Skip invalid emoji name
         emoji = Emoji.find_by_alias match[0]
@@ -66,7 +65,7 @@ module Jekyll::Spaceship
           result)
       end
 
-      body.inner_html = content
+      doc.inner_html = content
 
       # restore nodes (pre, code)
       nodes.each do |node|
