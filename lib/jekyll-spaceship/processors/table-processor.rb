@@ -18,13 +18,17 @@ module Jekyll::Spaceship
       end
       if references.size > 0
         content.scan(/[^\n]*(?<!\\)\|[^\n]*/) do |result|
+          replace = result
           references.each do |key, val|
-            replace = result
+            replace = replace
               .gsub(/\[([^\n\]]*?)\]\s*\[#{key}\]/, "[\\1](#{val})")
-              .gsub(/\[#{key}\]/, "[#{key}](#{val})")
-            next if result == replace
-            content = content.gsub(result, replace)
           end
+          references.each do |key, val|
+            replace = replace
+              .gsub(/\[#{key}\](?!\s*\(.*?\))/, "[#{key}](#{val})")
+          end
+          next if result == replace
+          content = content.gsub(result, replace)
         end
       end
 
