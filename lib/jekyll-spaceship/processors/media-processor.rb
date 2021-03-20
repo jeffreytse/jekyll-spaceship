@@ -128,7 +128,7 @@ module Jekyll::Spaceship
       src = element.get_attribute('src')
       title = element.get_attribute('title')
       id = data[:id_from] === 'html' ? '()' : data[:id]
-      match_data = src.match(/#{host}#{id}\S*/)
+      match_data = src&.match(/#{host}#{id}\S*/)
       return if match_data.nil?
 
       media_type = data[:media_type]
