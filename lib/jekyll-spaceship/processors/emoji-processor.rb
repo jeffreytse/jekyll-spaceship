@@ -38,8 +38,14 @@ module Jekyll::Spaceship
       # use nokogiri to parse html
       doc = Nokogiri::HTML(content)
 
+      body = doc.at('body')
+
+      # in case of a page has no the body node, especially when your
+      # page's layout field of front matter is nil or unavailable
+      return content if body.nil?
+
       # filter nodes (pre, code)
-      nodes = doc.css(selector)
+      nodes = body.css(selector)
       nodes.each do |node|
         # handle emoji markup
         node.inner_html = node.inner_html.gsub(
@@ -48,7 +54,7 @@ module Jekyll::Spaceship
       end
 
       # parse the emoji
-      content = doc.inner_html
+      content = body.inner_html
       content.scan(/(?<!\\):([\w\d+-]+?)(?<!\\):/) do |match|
         # Skip invalid emoji name
         emoji = Emoji.find_by_alias match[0]
@@ -65,7 +71,7 @@ module Jekyll::Spaceship
           result)
       end
 
-      doc.inner_html = content
+      body.inner_html = content
 
       # restore nodes (pre, code)
       nodes.each do |node|
