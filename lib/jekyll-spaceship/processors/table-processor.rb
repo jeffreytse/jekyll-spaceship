@@ -151,10 +151,10 @@ module Jekyll::Spaceship
         end
       end
 
-      result = cell.content.match(/(\|)+$/)
+      result = cell.inner_html.match(/(\|)+$/)
       return if result.nil?
 
-      cell.content = cell.content.gsub(/(\|)+$/, '')
+      cell.inner_html = cell.inner_html.gsub(/(\|)+$/, '')
       result = result[0]
       colspan = result.scan(/\|/).count
       scope.row.colspan += colspan
