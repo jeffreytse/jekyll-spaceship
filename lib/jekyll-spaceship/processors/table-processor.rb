@@ -211,8 +211,8 @@ module Jekyll::Spaceship
 
       # handle rowspan
       span_cell = scope.table.span_row_cells[scope.row.col_index]
-      if span_cell and cell.content.match(/^\s*\^{2}/)
-        cell.content = cell.content.gsub(/^\s*\^{2}/, '')
+      if span_cell and cell.inner_html.match(/^\s*\^{2}/)
+        cell.inner_html = cell.inner_html.gsub(/^\s*\^{2}/, '')
         span_cell.inner_html += "\n<br>\n#{cell.inner_html}"
         rowspan = span_cell.get_attribute('rowspan') || 1
         rowspan = rowspan.to_i + 1
