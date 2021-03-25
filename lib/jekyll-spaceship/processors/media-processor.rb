@@ -178,13 +178,14 @@ module Jekyll::Spaceship
         " #{cfg['loop'] ? 'loop' : ''}"\
         " src=\"#{cfg['src']}\""\
         " style=\"#{cfg['style']}\""\
-        " controls=\"true\">" \
-        "<p> Your browser doesn't support HTML5 audio."\
+        " controls>" \
+        " Your browser doesn't support HTML5 audio."\
         " Here is a <a href=\"#{cfg['src']}\">link to download the audio</a>"\
-        " instead. </p>"\
+        " instead."\
         "</audio>"
-      doc = Nokogiri::XML(html)
-      element.replace(doc.children.first)
+      doc = Nokogiri::HTML(html)
+      return if element.parent.nil?
+      element.replace(doc.at('body').children.first)
     end
 
     def handle_iframe(element, data)
@@ -201,8 +202,9 @@ module Jekyll::Spaceship
         " frameborder=\"#{cfg['frameborder']}\""\
         " allowfullscreen>"\
         "</iframe>"
-      doc = Nokogiri::XML(html)
-      element.replace(doc.children.first)
+      doc = Nokogiri::HTML(html)
+      return if element.parent.nil?
+      element.replace(doc.at('body').children.first)
     end
 
     def get_id_from_html(url, pattern)
