@@ -178,7 +178,7 @@ module Jekyll::Spaceship
         " #{cfg['loop'] ? 'loop' : ''}"\
         " src=\"#{cfg['src']}\""\
         " style=\"#{cfg['style']}\""\
-        " controls>" \
+        " controls=\"true\">" \
         "<p> Your browser doesn't support HTML5 audio."\
         " Here is a <a href=\"#{cfg['src']}\">link to download the audio</a>"\
         " instead. </p>"\
