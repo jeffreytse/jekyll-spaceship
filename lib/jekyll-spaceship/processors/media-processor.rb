@@ -181,7 +181,7 @@ module Jekyll::Spaceship
         " controls>" \
         "<p> Your browser doesn't support HTML5 audio."\
         " Here is a <a href=\"#{cfg['src']}\">link to download the audio</a>"\
-        "instead. </p>"\
+        " instead. </p>"\
         "</audio>"
       doc = Nokogiri::XML(html)
       element.replace(doc.children.first)
