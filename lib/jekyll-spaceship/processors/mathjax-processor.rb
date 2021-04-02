@@ -107,17 +107,22 @@ module Jekyll::Spaceship
 
     def scan_mathjax_expression(doc, &block)
       patterns = get_math_patterns()
-      doc.css('*').each do |node|
-        next if ['code', 'pre', 'figure'].include? node.name
-        next if node.ancestors('code, pre, figure').size > 0
-        next if node.children.size > 1
+      doc = doc.clone
+
+      # remove code, pre, figure nodes
+      doc.css('body code, body pre, body figure').each do |node|
+        node.remove
+      end
+
+      # remove scripting mathjax expression
+      doc.css('body script').each do |node|
+        next if node['type']&.match(/math\/tex/)
+        node.remove
+      end
+
+      # scan mathjax expressions
+      doc.css('body *').each do |node|
         patterns['include'].each do |pattern|
-          # check scripting mathjax expression
-          if node.name == 'script'
-            type = node['type']
-            next unless type
-            next unless type.match(/math\/tex/)
-          end
           # check normal mathjax expression
           node.content.scan(pattern) do |result|
             expr = result[0]
