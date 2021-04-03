@@ -90,8 +90,8 @@ module Jekyll::Spaceship
     def handle_dailymotion(element)
       handle_media(element, {
         media_type: 'iframe',
-        host: '(https?:)?\\/\\/.*dai.?ly.*',
-        id: '(?<=video\\/|\\/)([a-zA-Z0-9\\_\\-]+)',
+        host: '(https?:)?\\/\\/(?>www\\.)?dai\\.?ly(?>motion\\.com\\/video)?\\/',
+        id: '([a-zA-Z0-9\\_\\-]+)',
         base_url: "https://www.dailymotion.com/embed/video/"
       })
     end
