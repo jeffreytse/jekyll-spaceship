@@ -42,7 +42,7 @@ module Jekyll::Spaceship
       handle_media(element, {
         media_type: 'audio',
         host: '(https?:\\/\\/)?.*\\/',
-        id: '(.+?\\.(mp3|wav|ogg|mid|midi|aac|wma))',
+        id: '(.+?\\.(mp3|wav|ogg|mid|midi|aac|wma))'
       })
     end
 
@@ -53,7 +53,7 @@ module Jekyll::Spaceship
     # ![video](//techslides.com/demos/sample-videos/small.mp4?width=400)
     def handle_normal_video(element)
       handle_media(element, {
-        media_type: 'iframe',
+        media_type: 'video',
         host: '(https?:\\/\\/)?.*\\/',
         id: '(.+?\\.(avi|mp4|webm|ogg|ogv|flv|mkv|mov|wmv|3gp|rmvb|asf))'
       })
@@ -158,6 +158,10 @@ module Jekyll::Spaceship
         cfg['loop'] = qs['loop'] || data[:loop] || cfg['loop']
         cfg['style'] += ';display: none;' if qs['hidden']
         handle_audio(element, { cfg: cfg })
+      when 'video'
+        cfg['autoplay'] = qs['autoplay'] || data[:autoplay] || cfg['autoplay']
+        cfg['loop'] = qs['loop'] || data[:loop] || cfg['loop']
+        handle_video(element, { cfg: cfg })
       when 'iframe'
         cfg['title'] = title
         cfg['width'] = qs['width'] || data[:width] || cfg['width']
@@ -183,6 +187,25 @@ module Jekyll::Spaceship
         " Here is a <a href=\"#{cfg['src']}\">link to download the audio</a>"\
         " instead."\
         "</audio>"
+      doc = Nokogiri::HTML(html)
+      return if element.parent.nil?
+      element.replace(doc.at('body').children.first)
+    end
+
+    def handle_video(element, data)
+      cfg = data[:cfg]
+      html = "<video"\
+        " id=\"#{cfg['id']}\""\
+        " class=\"#{cfg['class']}\""\
+        " style=\"#{cfg['style']}\""\
+        " #{cfg['autoplay'] ? 'autoplay' : ''}"\
+        " #{cfg['loop'] ? 'loop' : ''}"\
+        " controls>" \
+        " <source src=\"#{cfg['src']}\">" \
+        " Your browser doesn't support HTML5 video."\
+        " Here is a <a href=\"#{cfg['src']}\">link to download the video</a>"\
+        " instead."\
+        "</video>"
       doc = Nokogiri::HTML(html)
       return if element.parent.nil?
       element.replace(doc.at('body').children.first)
