@@ -95,7 +95,6 @@ module Jekyll::Spaceship
             handle_multi_rows(data)
             handle_text_align(data)
             handle_rowspan(data)
-            handle_attr_list(data)
           end
         end
         rows.each do |row|
@@ -103,6 +102,7 @@ module Jekyll::Spaceship
           cells.each do |cell|
             data.cell = cell
             handle_format(data)
+            handle_attr_list(data)
           end
         end
         self.handled = true
@@ -272,7 +272,7 @@ module Jekyll::Spaceship
       content = cell.inner_html
       # inline attribute list(IAL) handler
       ial_handler = ->(list) do
-        list.scan(/(\S+)=("|')(.*?)\2|(\S+)/) do |attr|
+        list.scan(/(\S+)=(”|"|')(.*?)\2|(\S+)/) do |attr|
           key = attr[0]
           val = attr[2]
           single = attr[3]
