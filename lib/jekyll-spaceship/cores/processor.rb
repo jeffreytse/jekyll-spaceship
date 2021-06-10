@@ -90,6 +90,10 @@ module Jekyll::Spaceship
     def self.config
     end
 
+    def next?
+      true
+    end
+
     def process?
       Type.html?(output_ext) or Type.markdown?(ext)
     end

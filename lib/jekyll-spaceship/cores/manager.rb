@@ -14,6 +14,7 @@ module Jekyll::Spaceship
         container = _register.first
         events = _register.last.uniq
         events = events.select do |event|
+          next true if event.match(/^after/)
           next true if event.match(/^post/)
           next events.index(event.to_s.gsub(/^pre/, 'post').to_sym).nil?
         end
@@ -59,21 +60,25 @@ module Jekyll::Spaceship
     def self.dispatch(page, container, event)
       @@_processors.each do |processor|
         processor.dispatch page, container, event
+        break unless processor.next?
       end
       if event.to_s.start_with?('post') and Type.html? output_ext(page)
         self.dispatch_html_block(page)
       end
       @@_processors.each do |processor|
         processor.on_handled if processor.handled
+        break unless processor.next?
       end
     end
 
     def self.ext(page)
+      return unless page.respond_to? :path
       ext = page.path.match(/\.[^.]+$/)
       ext.to_s.rstrip
     end
 
     def self.output_ext(page)
+      return unless page.respond_to? :url_placeholders
       page.url_placeholders[:output_ext]
     end
 
