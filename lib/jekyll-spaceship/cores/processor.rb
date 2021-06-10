@@ -198,6 +198,20 @@ module Jekyll::Spaceship
       content
     end
 
+    def get_exclusion(id)
+      result = nil
+      match_data = id.match /<!JEKYLL@(.+)@(.+)>/
+      unless match_data.nil?
+        id = match_data[2].to_i
+        result = {
+          :id => id,
+          :marker => match_data[0],
+          :content => @exclusion_store[id]
+        }
+      end
+      result
+    end
+
     def self.escape_html(content)
       # escape link
       content.scan(/((https?:)?\/\/\S+\?[a-zA-Z0-9%\-_=\.&;]+)/) do |result|
@@ -239,6 +253,32 @@ module Jekyll::Spaceship
         body = Base64.encode64(body)
         body = "data:#{type};base64, #{body}"
         "<img class=\"#{css_class}\" src=\"#{body}\">"
+      end
+    end
+
+    def self.handle_bang_link(
+      content,
+      url = '(https?:)?\\/\\/.*',
+      title = '("(.*)".*){0,1}',
+      &block
+    )
+      # pre-handle reference-style links
+      regex = /(\[(.*)\]:\s*(#{url}\s*#{title}))/
+      content.scan regex do |match_data|
+        match = match_data[0]
+        ref_name = match_data[1]
+        ref_value = match_data[2]
+        content = content.gsub(match, '')
+          .gsub(/\!\[(.*)\]\s*\[#{ref_name}\]/,
+            "![\1](#{ref_value})")
+      end
+
+      # handle inline-style links
+      regex = /(\!\[(.*)\]\(.*#{url}\s*#{title}\))/
+      content.scan regex do |match_data|
+        url = match_data[2]
+        title = match_data[6]
+        block.call(url, title)
       end
     end
   end
