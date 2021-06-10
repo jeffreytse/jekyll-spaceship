@@ -64,7 +64,10 @@ module Jekyll::Spaceship
     def self.load_config
       # post load site config for `group :jekyll_plugin`
       Jekyll::Hooks.register :site, :after_init do |site|
+        # load config
         self.load(site.config)
+        # dispatch site after_init event
+        Manager.dispatch(site, :site, :after_init)
       end
     end
   end
