@@ -44,13 +44,24 @@ module Jekyll::Spaceship
       # page's layout field of front matter is nil or unavailable
       return content if body.nil?
 
+      # Count for restoration
+      escaped_count = 0
+
       # filter nodes (pre, code)
-      nodes = body.css(selector)
-      nodes.each do |node|
+      body.css(selector).each do |node|
+        count = escaped_count
+
         # handle emoji markup
-        node.inner_html = node.inner_html.gsub(
-          /:([\w\d+-]+?):/, '\:\1\:'
-        )
+        inner_html = node.inner_html.gsub(
+          /(?<!\\):([\w\d+-]+?)(?<!\\):/
+        ) do |match|
+          escaped_count += 1
+          "\\:#{match[1..-2]}\\:"
+        end
+
+        if escaped_count > count
+          node.inner_html = inner_html
+        end
       end
 
       # parse the emoji
@@ -73,8 +84,10 @@ module Jekyll::Spaceship
 
       body.inner_html = content
 
+      return doc.to_html if escaped_count.zero?
+
       # restore nodes (pre, code)
-      nodes.each do |node|
+      body.css(selector).each do |node|
         # handle emoji markup
         node.inner_html = node.inner_html.gsub(
           /\\:([\w\d+-]+?)\\:/, ':\1:'
