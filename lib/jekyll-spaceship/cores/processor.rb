@@ -193,9 +193,8 @@ module Jekyll::Spaceship
         match = @exclusion_store.pop
         id = @exclusion_store.size
         content = content.sub(
-          "<!JEKYLL@#{object_id}@#{id}>",
-          match.gsub(/(\\\d)/,'\\\\\1')
-        )
+          "<!JEKYLL@#{object_id}@#{id}>"
+        ) { match }
       end
       @exclusion_store = []
       content
