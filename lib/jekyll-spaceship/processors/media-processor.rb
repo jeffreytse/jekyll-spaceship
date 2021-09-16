@@ -30,6 +30,7 @@ module Jekyll::Spaceship
         handle_vimeo(element)
         handle_dailymotion(element)
         handle_spotify(element)
+        handle_spotify_podcast(element)
         handle_soundcloud(element)
       end
       doc.to_html
@@ -106,6 +107,19 @@ module Jekyll::Spaceship
         id: '(?<=track\\/)([a-zA-Z0-9\\_\\-]+)',
         base_url: "https://open.spotify.com/embed/track/",
         height: 80
+      })
+    end
+
+    # Examples:
+    # ![spotify podcast](//open.spotify.com/episode/31AxcwYdjsFtStds5JVWbT)
+    # ![spotify podcast](//open.spotify.com/episode/44gfWHnwbmSY7Euw6Nb39k?width=400)
+    def handle_spotify_podcast(element)
+      handle_media(element, {
+        media_type: 'iframe',
+        host: '(https?:)?\\/\\/open\\.spotify\\.com\\/episode\\/',
+        id: '(?<=episode\\/)([a-zA-Z0-9\\_\\-]+)',
+        base_url: "https://open.spotify.com/embed/episode/",
+        height: 152
       })
     end
 
