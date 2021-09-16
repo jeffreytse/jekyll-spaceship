@@ -112,6 +112,7 @@ Spaceship is a minimalistic, powerful and extremely customizable [Jekyll](https:
     - [5.2 Vimeo Usage](#vimeo-usage)
     - [5.3 DailyMotion Usage](#dailymotion-usage)
     - [5.4 Spotify Usage](#spotify-usage)
+    - [5.4 Spotify Podcast Usage](#spotify-podcast-usage)
     - [5.5 SoundCloud Usage](#soundcloud-usage)
     - [5.6 General Video Usage](#general-video-usage)
     - [5.7 General Audio Usage](#general-audio-usage)
@@ -790,6 +791,15 @@ the link as below:
 ```
 
 <image width="600" src="https://user-images.githubusercontent.com/9413601/89762618-5d11b000-db23-11ea-81db-35cc3682b234.png">
+
+#### Spotify Podcast Usage
+
+```markdown
+![](https://open.spotify.com/episode/31AxcwYdjsFtStds5JVWbT)
+```
+
+<image width="600" src="https://user-images.githubusercontent.com/9413601/133599796-1d213033-8184-4059-9ec2-5415e50c94dc.png">
+
 
 #### SoundCloud Usage
 
