@@ -123,6 +123,19 @@ module Jekyll::Spaceship
 
       # scan mathjax expressions
       doc.css('body *').each do |node|
+        # filter invalid nodes
+        next if node.children.size == 0
+        invalid = false
+        node.children.each do |child|
+          unless [
+              'text', 'br', 'span',
+              'img', 'svg', 'a'
+          ].include? child.name
+            break invalid = true
+          end
+        end
+        next if invalid
+
         patterns['include'].each do |pattern|
           # check normal mathjax expression
           node.content.scan(pattern) do |result|
