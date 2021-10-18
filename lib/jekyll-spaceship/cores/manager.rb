@@ -58,6 +58,7 @@ module Jekyll::Spaceship
     end
 
     def self.dispatch(page, container, event)
+      # dispatch to each processor
       @@_processors.each do |processor|
         processor.dispatch page, container, event
         break unless processor.next?
@@ -65,6 +66,12 @@ module Jekyll::Spaceship
       if event.to_s.start_with?('post') and Type.html? output_ext(page)
         self.dispatch_html_block(page)
       end
+      # update page excerpt
+      @@_processors.each do |processor|
+        next if not processor.handled
+        break page.data['excerpt'] = Jekyll::Excerpt.new(page)
+      end
+      # call on_handled
       @@_processors.each do |processor|
         processor.on_handled if processor.handled
         break unless processor.next?
