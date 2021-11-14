@@ -68,7 +68,8 @@ module Jekyll::Spaceship
       end
       # update page excerpt
       @@_processors.each do |processor|
-        next if not processor.handled
+        next unless processor.handled
+        next unless page.is_a? Jekyll::Document
         break page.data['excerpt'] = Jekyll::Excerpt.new(page)
       end
       # call on_handled
