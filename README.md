@@ -6,7 +6,7 @@
 </h1>
 
 <h4 align="center">
-  <a href="https://jekyllrb.org" target="_blank"><code>Jekyll</code></a> plugin for Astronauts.
+  <a href="https://jekyllrb.com" target="_blank"><code>Jekyll</code></a> plugin for Astronauts.
 </h4>
 
 <p align="center">
