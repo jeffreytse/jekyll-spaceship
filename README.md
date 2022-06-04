@@ -135,7 +135,16 @@ Spaceship is a minimalistic, powerful and extremely customizable [Jekyll](https:
 Add jekyll-spaceship plugin in your site's `Gemfile`, and run `bundle install`.
 
 ```ruby
-gem 'jekyll-spaceship'
+# If you have any plugins, put them here!
+group :jekyll_plugins do
+  gem 'jekyll-spaceship'
+end
+```
+
+Or you better like to write in one line:
+
+```ruby
+gem 'jekyll-spaceship', group: :jekyll_plugins
 ```
 
 Add jekyll-spaceship to the `plugins:` section in your site's `_config.yml`.
