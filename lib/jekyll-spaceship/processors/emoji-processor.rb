@@ -78,7 +78,7 @@ module Jekyll::Spaceship
         next if result.nil?
 
         content = content.gsub(
-          /(?<!\=")\s*:#{emoji_name}:\s*(?!"\s)/,
+          /(?<!\="):#{emoji_name}:(?!"\s)/,
           result)
       end
 
