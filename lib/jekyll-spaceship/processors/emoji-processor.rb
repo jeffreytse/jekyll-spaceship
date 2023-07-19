@@ -11,12 +11,13 @@ module Jekyll::Spaceship
         'css' => {
           'class' => 'emoji'
         },
+        'exclude' => 'code',
         'src' => 'https://github.githubassets.com/images/icons/emoji/'
       }
     end
 
     def on_handle_html(content)
-      emoji_filter(content, 'pre code') do |emoji|
+      emoji_filter(content, config['exclude']) do |emoji|
         # mark current file has been handled
         self.handled = true
 
